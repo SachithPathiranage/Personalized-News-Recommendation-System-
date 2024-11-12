@@ -1,0 +1,119 @@
+/* login */
+.login-container {
+    -fx-background-color: #f2f2f2;
+    -fx-padding: 40;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0.5, 0, 2);
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.input-field {
+    -fx-pref-width: 250px;
+    -fx-pref-height: 35px;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-padding: 0 10 0 10;
+}
+
+.input-field:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 1.5px;
+}
+
+.login-button {
+    -fx-background-color: #007bff;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 35px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.login-button:hover {
+    -fx-background-color: #0056b3;
+}
+
+.sign-up-label {
+    -fx-text-fill: #555;
+}
+
+.sign-up-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #007bff;
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-padding: 0 5;
+}
+
+.sign-up-button:hover {
+    -fx-text-fill: #0056b3;
+}
+
+/*Sign up */
+/* Root Styling */
+.signup-container {
+    -fx-background-color: #f2f2f2;
+    -fx-padding: 40;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.25), 10, 0.5, 0, 2);
+}
+
+.title-label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.input-field {
+    -fx-pref-width: 250px;
+    -fx-pref-height: 35px;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #cccccc;
+    -fx-padding: 0 10 0 10;
+}
+
+.input-field:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 1.5px;
+}
+
+.signup-button {
+    -fx-background-color: #28a745;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-pref-width: 250px;
+    -fx-pref-height: 35px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+}
+
+.signup-button:hover {
+    -fx-background-color: #218838;
+}
+
+.login-link-label {
+    -fx-text-fill: #555;
+}
+
+.login-link-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #007bff;
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-padding: 0 5;
+}
+
+.login-link-button:hover {
+    -fx-text-fill: #0056b3;
+}
+
