@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefWidth="800" prefHeight="600" fx:controller="org.example.ood.NewsController">
+    <!-- Top Bar for Branding or Navigation -->
+    <VBox spacing="10" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <Label text="News Explorer" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10px "
+               alignment="CENTER" prefHeight="50" />
+        <Separator />
+    </VBox>
+
+    <!-- Main Content Section -->
+    <VBox spacing="10" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+        <ListView fx:id="newsListView" prefWidth="800" prefHeight="530">
+            <!-- Custom List Cell -->
+            <items>
+                <!-- Placeholder will be dynamically populated -->
+            </items>
+        </ListView>
+    </VBox>
+    <stylesheets>
+        <URL value="@news.css" />
+    </stylesheets>
+</AnchorPane>

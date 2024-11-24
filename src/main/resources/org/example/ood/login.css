@@ -117,3 +117,19 @@
     -fx-text-fill: #0056b3;
 }
 
+/* General Styling */
+.label {
+    -fx-font-family: "Arial";
+}
+
+/* ListView Styling */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+}
+
+/* Hover Effect for List Cells */
+.list-cell:hover {
+    -fx-background-color: #e6f7ff;
+    -fx-cursor: hand;
+}

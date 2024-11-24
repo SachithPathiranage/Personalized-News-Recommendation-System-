@@ -44,19 +44,47 @@ public class Login_Signup {
 
 
     @FXML
-    private void handleLogin_User() {
+    private void handleLogin_User(ActionEvent event) {
         String email = emailField.getText();
         String password = passwordField.getText();
 
         if (authenticate_User_or_Admin(email, password, "SELECT * FROM users WHERE email = ? AND password = ?")) {
             Alert alert = new Alert(AlertType.INFORMATION, "Login successful!");
-            alert.showAndWait();
-            // Proceed to next page or application home
+            alert.showAndWait(); // Show alert first
+
+            try {
+                // Load the NewsDisplay.fxml file
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("NewsDisplay.fxml"));
+                Parent root = loader.load();
+
+                // Get the NewsController instance from the FXMLLoader
+                NewsController newsController = loader.getController();
+
+                // Initialize news articles within the NewsController
+                newsController.initializeNews();
+
+                // Create a new stage for the News page
+                Stage newsStage = new Stage();
+                newsStage.setTitle("News Articles");
+                newsStage.setScene(new Scene(root, 1025, 650));
+                newsStage.setResizable(true);
+                newsStage.show();
+
+                // Close the login window
+                Stage loginStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                loginStage.close();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                Alert errorAlert = new Alert(AlertType.ERROR, "Failed to load news articles!");
+                errorAlert.showAndWait();
+            }
         } else {
             Alert alert = new Alert(AlertType.ERROR, "Invalid email or password!");
             alert.showAndWait();
         }
     }
+
 
     private boolean authenticate_User_or_Admin(String email, String password, String selectUserSQL) {
         //String selectUserSQL = "SELECT * FROM users WHERE email = ? AND password = ?";

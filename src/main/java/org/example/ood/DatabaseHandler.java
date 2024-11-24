@@ -1,15 +1,16 @@
 package org.example.ood;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DatabaseHandler {
     private static volatile DatabaseHandler instance;
-    private static final String URL = "jdbc:mysql://localhost:3306/news_recommendation";
-    private static final String USER = "root"; // replace with your MySQL username
-    private static final String PASSWORD = ""; // replace with your MySQL password
+    private static final String URL = Config.getProperties().getProperty("DB_URL");
+    private static final String USER = Config.getProperties().getProperty("DB_USER");
+    private static final String PASSWORD = Config.getProperties().getProperty("DB_PASSWORD");
     private static final int MAX_RETRIES = 3; // max retry attempts
     private static Connection connection;
 
@@ -83,3 +84,5 @@ public class DatabaseHandler {
 //        }
 //    }
 }
+
+
