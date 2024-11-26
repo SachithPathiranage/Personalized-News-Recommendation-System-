@@ -14,7 +14,7 @@
     </VBox>
 
     <!-- Main Content Section -->
-    <VBox spacing="10" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+    <VBox spacing="10" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" prefWidth="1030">
         <ListView fx:id="newsListView" prefWidth="800" prefHeight="530">
             <!-- Custom List Cell -->
             <items>

@@ -2,9 +2,9 @@ package org.example.ood;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHandler {
     private static volatile DatabaseHandler instance;
@@ -70,6 +70,68 @@ public class DatabaseHandler {
         return connection;
     }
 
+    //Method to Save Preferences
+    public void saveUserPreference(String userId, int articleId, String preferenceType) throws SQLException {
+        String query = "INSERT INTO user_preferences (user_id, article_id, preference_type) VALUES (?, ?, ?)";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setInt(2, articleId);
+            statement.setString(3, preferenceType.toLowerCase());
+            statement.executeUpdate();
+            System.out.println("Preference saved: " + preferenceType + " for article ID " + articleId);
+        }
+    }
+
+
+    //Method to Remove Preferences
+    public void removeUserPreference(String userId, int articleId, String preferenceType) throws SQLException {
+        String query = "DELETE FROM user_preferences WHERE user_id = ? AND article_id = ? AND preference_type = ?";
+        try (PreparedStatement statement = getConnection().prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setInt(2, articleId);
+            statement.setString(3, preferenceType);
+            statement.executeUpdate();
+        }
+    }
+
+    //Method to Fetch User Preferences
+    public List<Integer> fetchUserPreferences(String userId, String preferenceType) throws SQLException {
+        List<Integer> articleIds = new ArrayList<>();
+        String query = "SELECT article_id FROM user_preferences WHERE user_id = ? AND preference_type = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setString(2, preferenceType.toLowerCase()); // Pass the preferenceType to filter
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                articleIds.add(resultSet.getInt("article_id"));
+            }
+        }
+
+        return articleIds;
+    }
+
+    public boolean isPreferenceRecorded(String userId, int articleId, String preferenceType) throws SQLException {
+        String query = "SELECT COUNT(*) FROM user_preferences WHERE user_id = ? AND article_id = ? AND preference_type = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setInt(2, articleId);
+            statement.setString(3, preferenceType.toLowerCase());
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                return resultSet.getInt(1) > 0; // Check if the count is greater than 0
+            }
+        }
+        return false;
+    }
+
+
+}
 
 //    public static void testConnection() {
 //        try (Connection connection = getConnection()) {
@@ -83,6 +145,6 @@ public class DatabaseHandler {
 //            e.printStackTrace();
 //        }
 //    }
-}
+
 
 

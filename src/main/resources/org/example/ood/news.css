@@ -78,39 +78,43 @@
 
 /* Read Button */
 .read-button {
-    -fx-background-color: #4caf50;
-    -fx-text-fill: #fff;
+    /*-fx-background-color: #4caf50;*/
+    -fx-text-fill: #000000;
     -fx-border-radius: 3;
     -fx-padding: 5;
+    -fx-max-width: 125;
 }
 
 .read-button:hover {
     -fx-background-color: #249b29;
+    -fx-border-color: #88badc;
 }
 
 /* Like Button */
 .like-button {
-    -fx-background-color: #2196f3;
-    -fx-text-fill: #fff;
+    /*-fx-background-color: #2196f3;*/
+    -fx-text-fill: #000000;
     -fx-border-radius: 3;
     -fx-padding: 5;
-    -fx-max-width: 100
+    -fx-max-width: 125;
 }
 
 .like-button:hover {
     -fx-background-color: #1976d2;
+    -fx-border-color: #88badc;
 }
 
 /* Dislike Button */
 .dislike-button {
-    -fx-background-color: #f44336;
-    -fx-text-fill: #fff;
+    /*-fx-background-color: #f44336;*/
+    -fx-text-fill: #000000;
     -fx-border-radius: 3;
     -fx-padding: 5;
-    -fx-max-width: 100
+    -fx-max-width: 125;
 }
 
 .dislike-button:hover {
     -fx-background-color: #e53935;
+    -fx-border-color: #88badc;
 }
 

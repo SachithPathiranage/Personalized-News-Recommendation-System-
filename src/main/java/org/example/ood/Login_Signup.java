@@ -42,31 +42,34 @@ public class Login_Signup {
     @FXML
     private PasswordField confirmPasswordField;
 
-
     @FXML
     private void handleLogin_User(ActionEvent event) {
         String email = emailField.getText();
         String password = passwordField.getText();
 
-        if (authenticate_User_or_Admin(email, password, "SELECT * FROM users WHERE email = ? AND password = ?")) {
+        // Attempt to authenticate the user and retrieve their name
+        User currentUser = authenticateUserAndRetrieveDetails(email, password, "SELECT id, name FROM users WHERE email = ? AND password = ?");
+
+        if (currentUser != null) {
             Alert alert = new Alert(AlertType.INFORMATION, "Login successful!");
-            alert.showAndWait(); // Show alert first
+            alert.showAndWait();
 
             try {
+                // Set the logged-in user
+                User.setCurrentUser(new User(currentUser.getId(), email, currentUser.getName())); // Set the user's email and name
+
                 // Load the NewsDisplay.fxml file
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("NewsDisplay.fxml"));
                 Parent root = loader.load();
 
-                // Get the NewsController instance from the FXMLLoader
+                // Get the NewsController instance and initialize
                 NewsController newsController = loader.getController();
-
-                // Initialize news articles within the NewsController
                 newsController.initializeNews();
 
                 // Create a new stage for the News page
                 Stage newsStage = new Stage();
                 newsStage.setTitle("News Articles");
-                newsStage.setScene(new Scene(root, 1025, 650));
+                newsStage.setScene(new Scene(root, 1040, 650));
                 newsStage.setResizable(true);
                 newsStage.show();
 
@@ -85,10 +88,7 @@ public class Login_Signup {
         }
     }
 
-
-    private boolean authenticate_User_or_Admin(String email, String password, String selectUserSQL) {
-        //String selectUserSQL = "SELECT * FROM users WHERE email = ? AND password = ?";
-
+    public User authenticateUserAndRetrieveDetails(String email, String password, String selectUserSQL) {
         try (Connection connection = getConnection()) {
             try (PreparedStatement preparedStatement = connection.prepareStatement(selectUserSQL)) {
 
@@ -96,14 +96,23 @@ public class Login_Signup {
                 preparedStatement.setString(2, password); // Ensure password is hashed similarly if hashed in the database
 
                 ResultSet resultSet = preparedStatement.executeQuery();
-                return resultSet.next(); // If a record exists, the login is successful
 
+                // Check if a record exists and retrieve the user's details
+                if (resultSet.next()) {
+                    User user = new User();
+                    user.setId(resultSet.getString("id")); // Retrieve the id column
+                    user.setName(resultSet.getString("name")); // Retrieve the name column
+                    user.setEmail(email); // Set the email since it's already known
+                    return user;
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
         }
+        return null; // Return null if authentication fails
     }
+
+
 
     @FXML
     private void openSignUp() {
@@ -140,7 +149,7 @@ public class Login_Signup {
     }
 
     @FXML
-    private void handleSignUp() throws SQLException {
+    private void handleSignUp(ActionEvent event) throws SQLException {
         String name = nameField.getText();
         String email = emailField_signup.getText();
         String password = passwordField_signup.getText();
@@ -158,6 +167,8 @@ public class Login_Signup {
 
             Alert alert = new Alert(AlertType.INFORMATION, "Sign-up successful! Your ID is: " +  ID + "\n" + "(Verification Code: " + unique_code + ")");
             alert.showAndWait();
+
+            backToLogin(event);
         }
     }
 
@@ -326,7 +337,7 @@ public class Login_Signup {
         String email = emailField_admin.getText();
         String password = passwordField_admin.getText();
 
-        if (authenticate_User_or_Admin(email, password,"SELECT * FROM admin WHERE Email = ? AND Password = ?")) {
+        if (authenticate_Admin(email, password,"SELECT * FROM admin WHERE Email = ? AND Password = ?")) {
             Alert alert = new Alert(AlertType.INFORMATION, "Login successful!");
             alert.showAndWait();
             // Proceed to next page or application home
@@ -335,6 +346,68 @@ public class Login_Signup {
             alert.showAndWait();
         }
     }
+    private boolean authenticate_Admin(String email, String password, String selectUserSQL) {
+        //String selectUserSQL = "SELECT * FROM users WHERE email = ? AND password = ?";
+
+        try (Connection connection = getConnection()) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(selectUserSQL)) {
+
+                preparedStatement.setString(1, email);
+                preparedStatement.setString(2, password); // Ensure password is hashed similarly if hashed in the database
+
+                ResultSet resultSet = preparedStatement.executeQuery();
+                return resultSet.next(); // If a record exists, the login is successful
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+//
+//    @FXML
+//    private void handleLogin_admin() {
+//        String email = emailField_admin.getText();
+//        String password = passwordField_admin.getText();
+//
+//        // Attempt to authenticate the admin and retrieve their name
+//        String adminName = authenticate_User_and_RetrieveName(email, password, "SELECT Name FROM admin WHERE Email = ? AND Password = ?");
+//
+//        if (adminName != null) {
+//            Alert alert = new Alert(AlertType.INFORMATION, "Login successful! Welcome, " + adminName + "!");
+//            alert.showAndWait();
+//
+//            try {
+//                // Set the logged-in admin (if you have an Admin class, you can set it similarly)
+//                Admin.setCurrentAdmin(new Admin(email, adminName)); // Replace Admin with your admin class if necessary
+//
+//                // Load the Admin dashboard or main page (e.g., AdminDashboard.fxml)
+//                FXMLLoader loader = new FXMLLoader(getClass().getResource("AdminDashboard.fxml"));
+//                Parent root = loader.load();
+//
+//                // Create a new stage for the Admin dashboard
+//                Stage adminStage = new Stage();
+//                adminStage.setTitle("Admin Dashboard");
+//                adminStage.setScene(new Scene(root, 1025, 650));
+//                adminStage.setResizable(true);
+//                adminStage.show();
+//
+//                // Close the admin login window
+//                Stage loginStage = (Stage) emailField_admin.getScene().getWindow();
+//                loginStage.close();
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                Alert errorAlert = new Alert(AlertType.ERROR, "Failed to load the Admin Dashboard!");
+//                errorAlert.showAndWait();
+//            }
+//        } else {
+//            Alert alert = new Alert(AlertType.ERROR, "Invalid email or password!");
+//            alert.showAndWait();
+//        }
+//    }
+
 
 }
 
