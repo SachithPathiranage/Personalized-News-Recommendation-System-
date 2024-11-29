@@ -17,130 +17,98 @@ import static org.example.OOD.Database_Handler.DatabaseHandler.getConnection;
 public class NewsAPIHandler {
 
     private static final String API_KEY = Config.getProperties().getProperty("NEWS_API_KEY");
-    private static final String API_URL = Config.getProperties().getProperty("API_URL") + API_KEY;
+    private static final String API_URL = Config.getProperties().getProperty("API_URL");
+    private static final String COUNTRY = "us"; // Specify country for the news (optional)
 
-    public void fetchAndStoreNews() {
-        // List of categories for which you want to fetch news
-        List<String> categories = List.of("business", "technology", "entertainment", "sports", "health", "general");
-
+    public void fetchAndSaveNewsArticles(String category) {
         try {
-            // Loop through each category and fetch the news
-            for (String category : categories) {
-                // Fetch data for the current category
-                String jsonResponse = fetchDataFromAPI(category);
+            // Build the API URL
+            String urlString = API_URL + "?category=" + category + "&country=" + COUNTRY + "&apiKey=" + API_KEY;
+            URL url = new URL(urlString);
 
-                // Parse JSON and insert into database
-                if (jsonResponse != null) {
-                    System.out.println("Fetched news for category: " + category);
-                    parseAndStoreNews(jsonResponse);  // Parse and store the fetched data
+            // Connect to the API
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                // Read the API response
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    response.append(line);
                 }
+                reader.close();
+
+                // Parse the JSON response
+                JSONObject jsonResponse = new JSONObject(response.toString());
+                JSONArray articles = jsonResponse.getJSONArray("articles");
+
+                for (int i = 0; i < articles.length(); i++) {
+                    JSONObject article = articles.getJSONObject(i);
+                    String title = article.optString("title", "N/A");
+                    String description = article.optString("description", "N/A");
+                    String content = article.optString("content", "N/A");
+                    String urlToArticle = article.optString("url", "N/A");
+                    String publishedAt = article.optString("publishedAt", "N/A");
+                    String sourceName = article.getJSONObject("source").optString("name", "N/A");
+                    String author = article.optString("author", "N/A");
+                    String imageUrl = article.optString("urlToImage", "N/A");
+
+                    // Before saving an article
+                    if (isRemovedArticle(title, description, content, urlToArticle)) {
+                        System.out.println("Skipping removed article: " + title);
+                    } else {
+                        saveArticleToDatabase(title, description, content, urlToArticle, publishedAt, sourceName, author, imageUrl);
+                    }
+
+                    // After bulk deletions or significant updates
+                    adjustIDs();
+
+                }
+
+                System.out.println("Articles from category \"" + category + "\" have been fetched and saved.");
+            } else {
+                System.err.println("Failed to fetch articles. HTTP response code: " + responseCode);
             }
         } catch (Exception e) {
-            System.err.println("Error while fetching and storing news: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Error fetching or saving articles: " + e.getMessage());
         }
     }
 
-    private String fetchDataFromAPI(String categories) throws Exception {
-        StringBuilder result = new StringBuilder();
-
-        // Construct the URL with categories and API_KEY
-        String urlString = API_URL + "&category=" + categories + "&pageSize=6&apiKey=" + API_KEY;
-
-        // Create the URL object with the constructed string
-        URL url = new URL(urlString);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-
-        // Fetch data from API
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                result.append(line);
-            }
-        }
-        return result.toString();
-    }
-
-    private void parseAndStoreNews(String jsonResponse) throws SQLException {
-        JSONObject jsonObject = new JSONObject(jsonResponse);
-        JSONArray articles = jsonObject.getJSONArray("articles");
-
+    private void saveArticleToDatabase(String title, String description, String content, String url, String publishedAt,
+                                       String sourceName, String author, String imageUrl) {
         String insertQuery = "INSERT INTO news (title, description, content, url, published_at, source_name, author, image_url) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-        // Adjust IDs
-        adjustIDs();
+        try {
+            // Convert ISO 8601 to MySQL-compatible DATETIME format
+            String formattedPublishedAt = publishedAt.replace("T", " ").replace("Z", "");
 
-        // Use try-with-resources for automatic resource management
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
+            // Check if the article already exists
+            DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+            if (!dbHandler.isArticleExists(url)) {
+                try (var connection = DatabaseHandler.getConnection();
+                     var preparedStatement = connection.prepareStatement(insertQuery)) {
+                    preparedStatement.setString(1, title);
+                    preparedStatement.setString(2, description);
+                    preparedStatement.setString(3, content);
+                    preparedStatement.setString(4, url);
+                    preparedStatement.setString(5, formattedPublishedAt);
+                    preparedStatement.setString(6, sourceName);
+                    preparedStatement.setString(7, author);
+                    preparedStatement.setString(8, imageUrl);
 
-            int batchSize = 0;
-
-            for (int i = 0; i < articles.length(); i++) {
-                JSONObject article = articles.getJSONObject(i);
-
-                String title = article.optString("title", "").trim();
-                String description = article.optString("description", "").trim();
-                String content = article.optString("content", "").trim();
-                String url = article.optString("url", "").trim();
-                String publishedAt = article.optString("publishedAt", "").replace("T", " ").replace("Z", "").trim();
-                String sourceName = article.getJSONObject("source").optString("name", "").trim();
-                String author = article.optString("author", "").trim();
-                String imageUrl = article.optString("urlToImage", "").trim();
-
-                // Skip invalid articles:
-                // - If description, content, title, or URL is missing or empty
-                // - If the article already exists in the database
-                // - If it's marked for removal
-                if (description.isEmpty() || content.isEmpty() || title.isEmpty() || url.isEmpty() ||
-                        DatabaseHandler.getInstance().isArticleExists(url) ||
-                        isRemovedArticle(title, description, content, url)) {
-                    continue; // Skip this article
+                    preparedStatement.executeUpdate();
+                    System.out.println("Article saved: " + title);
                 }
-
-                // Truncate the image URL if it's too long
-                if (imageUrl.length() > 500) {
-                    imageUrl = imageUrl.substring(0, 500);
-                }
-
-                // Set parameters
-                preparedStatement.setString(1, title);
-                preparedStatement.setString(2, description);
-                preparedStatement.setString(3, content);
-                preparedStatement.setString(4, url);
-                preparedStatement.setString(5, publishedAt);
-                preparedStatement.setString(6, sourceName);
-                preparedStatement.setString(7, author);
-                preparedStatement.setString(8, imageUrl);
-
-                // Add to batch
-                preparedStatement.addBatch();
-                batchSize++;
-
-                // Execute batch after every 1000 articles to avoid memory issues with large data
-                if (batchSize % 1000 == 0) {
-                    preparedStatement.executeBatch();
-                    System.out.println("Inserted batch of 1000 articles.");
-                }
+            } else {
+                System.out.println("Article already exists in the database: " + title);
             }
-
-            // Execute remaining batch if there are any left
-            if (batchSize % 1000 != 0) {
-                preparedStatement.executeBatch();
-                System.out.println("Inserted remaining articles.");
-            }
-
-            System.out.println("News articles have been successfully stored in the database.");
         } catch (SQLException e) {
-            // Log error for debugging purposes
-            System.err.println("SQL error while inserting articles: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            // Catch any other exceptions (e.g., JSON parsing errors)
-            System.err.println("Error while parsing or storing news: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("Error saving article to database: " + e.getMessage());
         }
     }
 
