@@ -27,10 +27,16 @@ public class NewsApplication extends Application {
         System.exit(0); // Ensure JVM termination
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         //Login_SignupController.testConnection();
-        NewsAPIHandler newsAPIHandler = new NewsAPIHandler();
-        newsAPIHandler.fetchAndStoreNews();
+//        NewsAPIHandler newsAPIHandler = new NewsAPIHandler();
+//
+//        // List of categories to fetch
+//        String[] categories = {"business", "technology", "sports", "health", "science", "entertainment"};
+//
+//        for (String category : categories) {
+//            newsAPIHandler.fetchAndSaveNewsArticles(category);
+//        }
 
         launch();
     }
