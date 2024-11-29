@@ -1,0 +1,249 @@
+/* General styles for the article container */
+.hbox-article {
+    -fx-padding: 15;
+    -fx-background-color: #ffffff;
+    -fx-border-color: #dddddd;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0, 2);
+    -fx-transition: 0.3s;
+}
+
+/* Hover effect for the article */
+.hbox-article:hover {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #88badc;
+    -fx-effect: dropshadow(gaussian, rgba(0, 120, 215, 0.3), 15, 0.5, 0, 4);
+    -fx-cursor: hand;
+}
+
+/* Image styling */
+.image-article {
+    -fx-border-radius: 5;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.5, 0, 2);
+}
+
+/* Title styling */
+.label-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 5 0 5 0;
+}
+
+/* Description styling */
+.label-description {
+    -fx-font-size: 14px;
+    -fx-text-fill: #555555;
+    -fx-wrap-text: true;
+    -fx-line-spacing: 3;
+}
+
+/* Source and date styling */
+.label-source-date {
+    -fx-font-size: 12px;
+    -fx-text-fill: #777777;
+    -fx-padding: 5 0 5 0;
+    -fx-wrap-text: true;
+}
+
+/* Container styles for the title and description */
+.vbox-article {
+    -fx-spacing: 5;
+    -fx-alignment: top-left;
+}
+
+/* Transition effects */
+.hbox-article:focused {
+    -fx-background-color: #e8f0fe;
+    -fx-border-color: #0063b1;
+}
+
+/* Button Styles */
+.button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333;
+    -fx-border-color: #808080;
+    -fx-border-radius: 3;
+    -fx-padding: 5;
+    -fx-cursor: hand;
+}
+
+.button:hover {
+    -fx-background-color: #ddd;
+    -fx-text-fill: #111;
+}
+
+/* Read Button */
+.read-button {
+    /*-fx-background-color: #4caf50;*/
+    -fx-text-fill: #000000;
+    -fx-border-radius: 3;
+    -fx-padding: 5;
+    -fx-max-width: 125;
+}
+
+.read-button:hover {
+    -fx-background-color: #249b29;
+    -fx-border-color: #88badc;
+}
+
+/* Like Button */
+.like-button {
+    /*-fx-background-color: #2196f3;*/
+    -fx-text-fill: #000000;
+    -fx-border-radius: 3;
+    -fx-padding: 5;
+    -fx-max-width: 125;
+}
+
+.like-button:hover {
+    -fx-background-color: #1976d2;
+    -fx-border-color: #88badc;
+}
+
+/* Dislike Button */
+.dislike-button {
+    /*-fx-background-color: #f44336;*/
+    -fx-text-fill: #000000;
+    -fx-border-radius: 3;
+    -fx-padding: 5;
+    -fx-max-width: 125;
+}
+
+.dislike-button:hover {
+    -fx-background-color: #e53935;
+    -fx-border-color: #88badc;
+}
+
+/* General Layout */
+.root {
+    -fx-font-family: "Times New Roman", sans-serif;
+    -fx-background-color: #f4f8fc; /* Light blue background */
+}
+
+/* Separator Styling */
+.separator {
+    -fx-background-color: #a0c4ff; /* Light blue-grey separator */
+    -fx-opacity: 0.6;
+}
+
+/* TabPane Styling */
+.tab-pane {
+    -fx-tab-min-width: 100px; /* Minimum tab width */
+    -fx-tab-max-width: 150px; /* Maximum tab width */
+    -fx-tab-min-height: 40px; /* Height of tabs */
+    -fx-background-color: #ffffff; /* Background of the tab content */
+    -fx-border-color: #90caf9; /* Light blue border */
+    -fx-border-radius: 10; /* Rounded corners for content */
+    -fx-padding: 5; /* Inner padding */
+}
+
+/* Tab Styling */
+.tab {
+    -fx-background-color: linear-gradient(to bottom, #ffffff, #e0e0e0); /* Light gradient */
+    -fx-background-insets: 0, 1; /* Insets for hover and focus effects */
+    -fx-padding: 8 20; /* Padding for the tab text */
+    -fx-text-fill: #555; /* Text color */
+    -fx-border-color: transparent; /* Default border (invisible) */
+    -fx-border-radius: 10; /* Rounded corners */
+    -fx-font-size: 16px
+}
+
+/* Tab Hover Effect */
+.tab:hover {
+    -fx-background-color: linear-gradient(to bottom, #90caf9, #64b5f6); /* Slightly darker gradient */
+    -fx-text-fill: #000; /* Slightly darker text */
+}
+
+/* Selected Tab */
+.tab:selected {
+    -fx-background-color: linear-gradient(to bottom, #1565c0, #0d47a1); /* Dark blue gradient */
+    -fx-text-fill: #ffffff; /* White text for selected tab */
+    -fx-font-weight: bold;
+    -fx-border-color: #0b3a8c;
+    -fx-border-width: 0 0 2px 0;
+}
+
+/* TabPane Headers */
+.tab-header-area {
+    -fx-background-color: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+    -fx-border-color: #a0c4ff;
+    -fx-border-radius: 10;
+    -fx-padding: 10 0;
+}
+
+/* ListView Styling */
+.list-view {
+    -fx-background-color: #ffffff; /* White background for the list */
+    -fx-border-color: #90caf9; /* Light border */
+    -fx-border-radius: 10; /* Rounded corners */
+    -fx-padding: 10; /* Padding inside the list */
+    -fx-cell-hover-color: #f4f4f4; /* Slight hover effect for cells */
+    -fx-focus-color: #1e88e5; /* Focus color for the list */
+    -fx-faint-focus-color: transparent;
+}
+
+/* ListView Cells */
+/* General ListCell Styling */
+.list-cell {
+    -fx-padding: 10;
+    -fx-font-size: 16px;
+    -fx-text-fill: #0d47a1;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-transition: background-color 0.3s ease, border-color 0.3s ease, -fx-text-fill 0.3s ease; /* Smooth animation */
+
+}
+
+/* Hover Effect */
+.list-cell:hover {
+    -fx-background-color: #e3f2fd; /* Light blue */
+    -fx-text-fill: #1a237e; /* Darker blue */
+    -fx-border-color: #bbdefb; /* Border for hover effect */
+    -fx-transition: background-color 0.3s ease;
+}
+
+/* Selected Item */
+.list-cell:selected {
+    -fx-background-color: linear-gradient(to right, #2196f3, #eef2f5); /* Blue gradient */
+    -fx-text-fill: #ffffff; /* White text */
+    -fx-border-color: #0d47a1; /* Dark blue border */
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px; /* Rounded corners for selected item */
+    -fx-padding: 10;
+}
+
+/* Ensure Hover Does Not Override Selection */
+.list-cell:hover:selected {
+    -fx-background-color: linear-gradient(to right, #2196f3, #1976d2); /* Same as selected */
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #0d47a1;
+}
+
+
+/* StackPane Content (General Tab) */
+.stack-pane {
+    -fx-background-color: #fafafa; /* Light grey background for dynamic content */
+    -fx-padding: 20; /* Padding for dynamic content */
+    -fx-border-color: #ddd; /* Light border */
+    -fx-border-radius: 10; /* Rounded corners */
+}
+
+/* Scrollbars */
+.scroll-bar {
+    -fx-background-color: #eaeaea; /* Light grey background */
+}
+
+.scroll-bar:vertical .thumb,
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #bbb; /* Thumb color */
+    -fx-background-radius: 5; /* Rounded thumb */
+}
+
+.scroll-bar:vertical .thumb:hover,
+.scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #999; /* Darker thumb on hover */
+}

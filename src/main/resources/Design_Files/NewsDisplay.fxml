@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml" prefWidth="800" prefHeight="600" fx:controller="org.example.OOD.Controllers.NewsController">
+    <!-- Top Bar for Branding or Navigation -->
+    <VBox spacing="10" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <Label text="News Explorer" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10px "
+               alignment="CENTER" prefHeight="50" />
+        <Separator />
+    </VBox>
+
+
+    <!-- TabPane for Category Selection -->
+    <TabPane AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" prefWidth="780" prefHeight="480">
+
+        <!-- General Category Tab: Displays current selected tab content -->
+        <Tab text="General" closable="false">
+            <!-- Main Content Section -->
+            <VBox spacing="10" AnchorPane.topAnchor="60.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" prefWidth="1030">
+                <ListView fx:id="newsListView" prefWidth="800" prefHeight="530">
+                    <!-- Custom List Cell -->
+                    <items>
+                        <!-- Placeholder will be dynamically populated -->
+                    </items>
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Tech Category Tab -->
+        <Tab text="Tech" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="techListView" prefWidth="760" prefHeight="430">
+                    <!-- Tech News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Entertainment Category Tab -->
+        <Tab text="Entertainment" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="entertainmentListView" prefWidth="760" prefHeight="430">
+                    <!-- Entertainment News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Business Category Tab -->
+        <Tab text="Business" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="businessListView" prefWidth="760" prefHeight="430">
+                    <!-- Business News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Sports Category Tab -->
+        <Tab text="Sports" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="sportsListView" prefWidth="760" prefHeight="430">
+                    <!-- Sports News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Politics Category Tab -->
+        <Tab text="Politics" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="politicsListView" prefWidth="760" prefHeight="430">
+                    <!-- Politics News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Travel Category Tab -->
+        <Tab text="Travel" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="travelListView" prefWidth="760" prefHeight="430">
+                    <!-- Travel News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Food Category Tab -->
+        <Tab text="Food" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="foodListView" prefWidth="760" prefHeight="430">
+                    <!-- Food News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+        <!-- Health Category Tab -->
+        <Tab text="Health" closable="false">
+            <VBox spacing="10">
+                <ListView fx:id="healthListView" prefWidth="760" prefHeight="430">
+                    <!-- Health News Items will be dynamically populated -->
+                </ListView>
+            </VBox>
+        </Tab>
+
+    </TabPane>
+    <stylesheets>
+        <URL value="@../Styling_Sheets/news.css" />
+    </stylesheets>
+</AnchorPane>
