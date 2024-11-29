@@ -143,7 +143,6 @@ public class DatabaseHandler {
         return false;
     }
 
-
     // Method to Fetch Articles
     public List<String> fetchArticleTitles() throws SQLException {
         List<String> articleTitles = new ArrayList<>();
@@ -158,7 +157,6 @@ public class DatabaseHandler {
         }
         return articleTitles;
     }
-
 }
 
 //    public static void testConnection() {
