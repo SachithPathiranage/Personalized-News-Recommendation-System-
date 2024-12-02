@@ -2,10 +2,13 @@ package org.example.OOD.Database_Handler;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import org.example.OOD.Configurations.Config;
+import org.example.OOD.Models.Article;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseHandler {
     private static volatile DatabaseHandler instance;
@@ -114,6 +117,32 @@ public class DatabaseHandler {
         return articleIds;
     }
 
+    public Map<String, List<Integer>> fetchAllUserPreferences(String userId) throws SQLException {
+        Map<String, List<Integer>> preferencesMap = new HashMap<>();
+        preferencesMap.put("liked", new ArrayList<>());
+        preferencesMap.put("disliked", new ArrayList<>());
+        preferencesMap.put("read", new ArrayList<>());
+
+        String query = "SELECT article_id, preference_type FROM user_preferences WHERE user_id = ?";
+
+        try (Connection connection = DatabaseHandler.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String preferenceType = resultSet.getString("preference_type");
+                    int articleId = resultSet.getInt("article_id");
+
+                    preferencesMap.get(preferenceType).add(articleId);
+                }
+            }
+        }
+
+        return preferencesMap;
+    }
+
+
     public boolean isPreferenceRecorded(String userId, int articleId, String preferenceType) throws SQLException {
         String query = "SELECT COUNT(*) FROM user_preferences WHERE user_id = ? AND article_id = ? AND preference_type = ?";
         try (Connection connection = getConnection();
@@ -143,20 +172,57 @@ public class DatabaseHandler {
         return false;
     }
 
-    // Method to Fetch Articles
-    public List<String> fetchArticleTitles() throws SQLException {
-        List<String> articleTitles = new ArrayList<>();
-        String query = "SELECT title FROM news";
+    // Fetch articles from the database
+    public List<Article> fetchArticles() throws SQLException {
+        List<Article> articles = new ArrayList<>();
+        String query = "SELECT id, title FROM news";
 
         try (Connection connection = getConnection();
-             Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(query);
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
             while (resultSet.next()) {
-                articleTitles.add(resultSet.getString("title"));
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                articles.add(new Article(id, title));
             }
         }
-        return articleTitles;
+        return articles;
     }
+
+    public List<Article> fetchArticlesByCategory(String category) throws SQLException {
+        List<Article> articles = new ArrayList<>();
+        String query = "SELECT * FROM news WHERE category = ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, category);
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                String sourceName = resultSet.getString("source_name");
+                String publishedDate = resultSet.getString("published_at");
+                String imageUrl = resultSet.getString("image_url");
+                articles.add(new Article(id, title, description, sourceName, publishedDate, imageUrl, category));
+            }
+        }
+        return articles;
+    }
+
+
+    // Update the category for an article
+    public void updateArticleCategory(int articleId, String category) throws SQLException {
+        String query = "UPDATE news SET category = ? WHERE id = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, category);
+            statement.setInt(2, articleId);
+            statement.executeUpdate();
+        }
+    }
+
 }
 
 //    public static void testConnection() {

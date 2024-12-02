@@ -1,12 +1,5 @@
 package org.example.OOD.Models;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.web.WebView;
-import javafx.stage.Stage;
-
 import java.sql.SQLException;
 
 public class User {
@@ -68,42 +61,6 @@ public class User {
         this.email = email;
     }
 
-    @FXML
-    public static void ReadArticleAction(Article article) {
-        // Get the article URL
-        String articleUrl = article.getUrl(); // Replace with the correct method to get the article URL
-
-        if (articleUrl != null && !articleUrl.isEmpty()) {
-            try {
-                // Load the FXML file
-                FXMLLoader loader = new FXMLLoader(User.class.getResource("/Design_Files/article_display.fxml"));
-
-                // Create a new scene from the FXML
-                Parent root = loader.load();
-
-                // Find the WebView node directly from the FXML root
-                WebView webView = (WebView) root.lookup("#webView");
-
-                if (webView != null) {
-                    // Load the article URL into the WebView
-                    webView.getEngine().load(articleUrl);
-                } else {
-                    System.out.println("WebView node not found in FXML.");
-                }
-
-                // Set up the stage and display it
-                Stage stage = new Stage();
-                stage.setTitle("Read org.example.OOD.Article");
-                stage.setScene(new Scene(root));
-                stage.show();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            System.out.println("Invalid article URL.");
-        }
-    }
 
     public UserPreferences getPreferences() {
         return preferences;

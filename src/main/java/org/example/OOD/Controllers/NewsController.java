@@ -2,8 +2,11 @@ package org.example.OOD.Controllers;
 
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -11,6 +14,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -28,13 +33,40 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class NewsController {
     @FXML
+    public WebView webView;
+    @FXML
     private ListView<HBox> newsListView;
     private User currentUser; // Store the logged-in user
+
+    @FXML
+    private ListView<HBox> businessListView;
+
+    @FXML
+    private ListView<HBox> entertainmentListView;
+
+    @FXML
+    private ListView<HBox> foodListView;
+
+    @FXML
+    private ListView<HBox> healthListView;
+
+    @FXML
+    private ListView<HBox> politicsListView;
+
+    @FXML
+    private ListView<HBox> sportsListView;
+
+    @FXML
+    private ListView<HBox> techListView;
+
+    @FXML
+    private ListView<HBox> travelListView;
+
+    private Map<String, ListView<HBox>> categoryMap;
 
     private static List<Article> fetchNewsFromDatabase() {
         List<Article> articles = new ArrayList<>();
@@ -53,9 +85,10 @@ public class NewsController {
                 String author = resultSet.getString("author");
                 String source = resultSet.getString("source_name");
                 String imageUrl = resultSet.getString("image_url");
+                String category = resultSet.getString("category");
 
                 // Create org.example.OOD.Article object and add to list
-                Article article = new Article(id, title, description, newsUrl, source, author, imageUrl, date);
+                Article article = new Article(id, title, description, newsUrl, source, author, imageUrl, date, category);
                 articles.add(article);
             }
         } catch (Exception e) {
@@ -66,57 +99,125 @@ public class NewsController {
     }
 
     public void initializeNews() {
+        categoryMap = Map.of(
+                "General", newsListView,
+                "Tech", techListView,
+                "Entertainment", entertainmentListView,
+                "Business", businessListView,
+                "Sports", sportsListView,
+                "Politics", politicsListView,
+                "Travel", travelListView,
+                "Food", foodListView,
+                "Health", healthListView
+        );
+
         this.currentUser = User.getCurrentUser(); // Get the logged-in user
+
         if (currentUser != null) {
             System.out.println("Loading news for: " + currentUser.getName() + " with ID: " + currentUser.getId());
 
-            // Fetch all articles from the database
+            // Fetch all articles and user preferences
             List<Article> articles = fetchNewsFromDatabase();
+            if (articles == null || articles.isEmpty()) {
+                System.out.println("No articles found in the database.");
+                return;
+            }
 
             try {
-                // Fetch user preferences from the database
-                List<Integer> likedArticles = DatabaseHandler.getInstance()
-                        .fetchUserPreferences(currentUser.getId(), "liked");
-                List<Integer> dislikedArticles = DatabaseHandler.getInstance()
-                        .fetchUserPreferences(currentUser.getId(), "disliked");
-                List<Integer> readArticles = DatabaseHandler.getInstance()
-                        .fetchUserPreferences(currentUser.getId(), "read");
-
-                // If no preferences exist, log a message
-                if (likedArticles.isEmpty() && dislikedArticles.isEmpty() && readArticles.isEmpty()) {
-                    System.out.println("No preferences found for the user. Initializing with default articles.");
-                }
+                // Fetch user preferences in one go
+                Map<String, List<Integer>> userPreferences = fetchUserPreferences(currentUser.getId());
 
                 // Log preferences for debugging
-                System.out.println("Fetched liked articles: " + likedArticles);
-                System.out.println("Fetched disliked articles: " + dislikedArticles);
-                System.out.println("Fetched read articles: " + readArticles);
+                logPreferences(userPreferences);
 
+                // Populate the ListView with articles and update preferences
+                populateArticles(articles, userPreferences);
 
-                // Iterate over the articles and update user preferences accordingly
-                for (Article article : articles) {
-                    if (likedArticles.contains(article.getId())) {
-                        currentUser.getPreferences().addLikedArticle(article, currentUser.getId());
-                    }
-                    if (dislikedArticles.contains(article.getId())) {
-                        currentUser.getPreferences().addDislikedArticle(article, currentUser.getId());
-                    }
-                    if (readArticles.contains(article.getId())) {
-                        currentUser.getPreferences().addReadArticle(article, currentUser.getId());
-                    }
+                // Populate category-specific news
+                populateCategoryNews();
 
-                    // Create a news item for each article and add it to the ListView
-                    HBox newsItem = createNewsItem(article);
-                    newsListView.getItems().add(newsItem);
-                }
             } catch (SQLException e) {
-                // Handle any SQL exceptions gracefully
+                System.out.println("Error fetching data from the database.");
                 e.printStackTrace();
-                System.out.println("Error fetching user preferences from the database.");
             }
         } else {
-            // Handle the case when no user is logged in
             System.out.println("No user is logged in.");
+        }
+    }
+
+    // Fetch user preferences and organize them into a map
+    private Map<String, List<Integer>> fetchUserPreferences(String userId) throws SQLException {
+        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        Map<String, List<Integer>> preferences = new HashMap<>();
+
+        preferences.put("liked", dbHandler.fetchUserPreferences(userId, "liked"));
+        preferences.put("disliked", dbHandler.fetchUserPreferences(userId, "disliked"));
+        preferences.put("read", dbHandler.fetchUserPreferences(userId, "read"));
+
+        return preferences;
+    }
+
+    // Log user preferences for debugging
+    private void logPreferences(Map<String, List<Integer>> preferences) {
+        System.out.println("Liked articles: " + preferences.get("liked"));
+        System.out.println("Disliked articles: " + preferences.get("disliked"));
+        System.out.println("Read articles: " + preferences.get("read"));
+    }
+
+    // Populate the ListView with articles and update preferences
+    private void populateArticles(List<Article> articles, Map<String, List<Integer>> preferences) {
+        if (newsListView != null) {
+            processArticles(articles, preferences, newsListView);
+        } else {
+            System.out.println("Error: newsListView is not initialized.");
+        }
+    }
+
+    // Populate articles for each category in categoryMap
+    private void populateCategoryNews() {
+        if (categoryMap != null && !categoryMap.isEmpty()) {
+            categoryMap.forEach((category, listView) -> {
+                try {
+                    // Fetch articles for the category
+                    List<Article> articlesByCategory = DatabaseHandler.getInstance().fetchArticlesByCategory(category);
+
+                    if (currentUser != null && currentUser.getPreferences() != null) {
+                        // Fetch user preferences from the database
+                        Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
+
+                        // Use the helper method to process articles
+                        processArticles(articlesByCategory, userPreferences, listView);
+                    }
+                } catch (SQLException e) {
+                    System.out.println("Error fetching articles for category: " + category);
+                    e.printStackTrace();
+                }
+            });
+        } else {
+            System.out.println("Error: categoryMap is not initialized or is empty.");
+        }
+    }
+
+    private void processArticles(List<Article> articles, Map<String, List<Integer>> preferences, ListView<HBox> listView) {
+        for (Article article : articles) {
+            // Update user preferences
+            if (preferences.get("liked").contains(article.getId())) {
+                currentUser.getPreferences().addLikedArticle(article, currentUser.getId());
+            }
+            if (preferences.get("disliked").contains(article.getId())) {
+                currentUser.getPreferences().addDislikedArticle(article, currentUser.getId());
+            }
+            if (preferences.get("read").contains(article.getId())) {
+                currentUser.getPreferences().addReadArticle(article, currentUser.getId());
+            }
+
+            // Create the news item UI element and add it to the ListView
+            if (listView != null) {
+                HBox newsItem = createNewsItem(article);
+                listView.getItems().add(newsItem);
+            } else {
+                System.out.println("Error: ListView is not initialized.");
+            }
         }
     }
 
@@ -227,7 +328,7 @@ public class NewsController {
             }
             if (preferences.isRead(article)) {
                 readButton.setText("Read Again ✅");
-                readButton.setStyle("-fx-background-color: green;"); // Optional style for "read" state
+                readButton.setStyle("-fx-background-color: #59ea59;"); // Optional style for "read" state
             }
 
             // Like button action
@@ -239,7 +340,7 @@ public class NewsController {
                 } else {
                     preferences.addLikedArticle(article,currentUser.getId());
                     likeButton.setText("Unlike");
-                    likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125;"); // Blue for liked
+                    likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125; -fx-border-color: #031452"); // Blue for liked
                     dislikeButton.setText("👎 Dislike");
                     dislikeButton.setStyle(""); // Reset dislike button
                 }
@@ -254,7 +355,7 @@ public class NewsController {
                 } else {
                     preferences.addDislikedArticle(article, currentUser.getId());
                     dislikeButton.setText("Remove Dislike");
-                    dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125;"); // Red for disliked
+                    dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125; -fx-border-color: #500202"); // Red for disliked
                     likeButton.setText("👍 Like");
                     likeButton.setStyle(""); // Reset like button
                 }
@@ -262,10 +363,10 @@ public class NewsController {
 
             // Read button action
             readButton.setOnAction(event -> {
-                User.ReadArticleAction(article);
+                ReadArticleAction(article);
                 preferences.addReadArticle(article, currentUser.getId());
                 readButton.setText("Read Again ✅");
-                readButton.setStyle("-fx-background-color: green; -fx-max-width: 125;"); // Update to show article was read
+                readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d"); // Update to show article was read
             });
 
         }
@@ -364,5 +465,42 @@ public class NewsController {
     private boolean requiresSpecialHeaders(String url) {
         // Example condition: Check for specific domains or patterns
         return url.contains("fortune.com") || url.contains("fxstreet.com");
+    }
+
+    @FXML
+    public void ReadArticleAction(Article article) {
+        // Get the article URL
+        String articleUrl = article.getUrl(); // Replace with the correct method to get the article URL
+
+        if (articleUrl != null && !articleUrl.isEmpty()) {
+            try {
+                // Load the FXML file
+                FXMLLoader loader = new FXMLLoader(User.class.getResource("/Design_Files/article_display.fxml"));
+
+                // Create a new scene from the FXML
+                Parent root = loader.load();
+
+                // Find the WebView node directly from the FXML root
+                WebView webView = (WebView) root.lookup("#webView");
+
+                if (webView != null) {
+                    // Load the article URL into the WebView
+                    webView.getEngine().load(articleUrl);
+                } else {
+                    System.out.println("WebView node not found in FXML.");
+                }
+
+                // Set up the stage and display it
+                Stage stage = new Stage();
+                stage.setTitle("Read Article");
+                stage.setScene(new Scene(root));
+                stage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            System.out.println("Invalid article URL.");
+        }
     }
 }

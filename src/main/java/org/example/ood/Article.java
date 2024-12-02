@@ -28,6 +28,11 @@ public class Article {
         this.dislikes = new AtomicInteger(0);
     }
 
+    public Article(int id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
     // Getters and setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

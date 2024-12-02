@@ -13,6 +13,8 @@ public class Article {
     private String publishedDate;
     private AtomicInteger likes;
     private AtomicInteger dislikes;
+    private String category;
+
 
     // Constructor
     public Article(int id, String title, String description, String url, String source_name, String author, String imageUrl, String publishedDate) {
@@ -26,6 +28,33 @@ public class Article {
         this.publishedDate = publishedDate;
         this.likes = new AtomicInteger(0);
         this.dislikes = new AtomicInteger(0);
+    }
+    public Article(int id, String title) {
+        this.id = id;
+        this.title = title;
+    }
+
+    public Article(int id, String title, String description, String newsUrl, String source, String author, String imageUrl, String date, String category) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.url = newsUrl;
+        this.source_name = source;
+        this.author = author;
+        this.imageUrl = imageUrl;
+        this.publishedDate = date;
+        this.likes = new AtomicInteger(0);
+        this.dislikes = new AtomicInteger(0);
+        this.category = category;
+    }
+
+    public Article(int id, String title, String description, String sourceName, String publishedDate, String imageUrl, String category) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.source_name = sourceName;
+        this.publishedDate = publishedDate;
+        this.imageUrl = imageUrl;
     }
 
     // Getters and setters
@@ -81,5 +110,5 @@ public class Article {
         dislikes.incrementAndGet(); // Thread-safe increment
         System.out.println("Article disliked! Total dislikes: " + dislikes);
     }
-
 }
+

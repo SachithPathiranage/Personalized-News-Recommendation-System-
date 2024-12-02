@@ -143,7 +143,7 @@
 
 /* Tab Styling */
 .tab {
-    -fx-background-color: linear-gradient(to bottom, #ffffff, #e0e0e0); /* Light gradient */
+    -fx-background-color: linear-gradient(to bottom, #baf5ff, #ffffff); /* Light gradient */
     -fx-background-insets: 0, 1; /* Insets for hover and focus effects */
     -fx-padding: 8 20; /* Padding for the tab text */
     -fx-text-fill: #555; /* Text color */
@@ -160,7 +160,7 @@
 
 /* Selected Tab */
 .tab:selected {
-    -fx-background-color: linear-gradient(to bottom, #1565c0, #0d47a1); /* Dark blue gradient */
+    -fx-background-color: linear-gradient(to bottom, #89b1e5, #3b83f1); /* Dark blue gradient */
     -fx-text-fill: #ffffff; /* White text for selected tab */
     -fx-font-weight: bold;
     -fx-border-color: #0b3a8c;
@@ -218,7 +218,7 @@
 
 /* Ensure Hover Does Not Override Selection */
 .list-cell:hover:selected {
-    -fx-background-color: linear-gradient(to right, #2196f3, #1976d2); /* Same as selected */
+    -fx-background-color: linear-gradient(to right, #8ecfff, #e9f6ff); /* Same as selected */
     -fx-text-fill: #ffffff;
     -fx-border-color: #0d47a1;
 }
