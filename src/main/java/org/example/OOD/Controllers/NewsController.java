@@ -22,6 +22,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 import org.example.OOD.Models.Article;
+import org.example.OOD.Models.Category;
 import org.example.OOD.Models.User;
 import org.example.OOD.Models.UserPreferences;
 
@@ -38,6 +39,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.example.OOD.Database_Handler.DatabaseHandler.fetchNewsFromDatabase;
 
 public class NewsController {
     @FXML
@@ -72,48 +75,40 @@ public class NewsController {
 
     private Map<String, ListView<HBox>> categoryMap;
 
-    private static List<Article> fetchNewsFromDatabase() {
-        List<Article> articles = new ArrayList<>();
-        String query = "SELECT * FROM news";
-
-        try (Connection connection = DatabaseHandler.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
-                String newsUrl = resultSet.getString("url");
-                String date = resultSet.getString("published_at");
-                String author = resultSet.getString("author");
-                String source = resultSet.getString("source_name");
-                String imageUrl = resultSet.getString("image_url");
-                String category = resultSet.getString("category");
-
-                // Create org.example.OOD.Article object and add to list
-                Article article = new Article(id, title, description, newsUrl, source, author, imageUrl, date, category);
-                articles.add(article);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return articles;
-    }
-
     public void initializeNews() {
-        categoryMap = Map.of(
-                "General", newsListView,
-                "Tech", techListView,
-                "Entertainment", entertainmentListView,
-                "Business", businessListView,
-                "Sports", sportsListView,
-                "Politics", politicsListView,
-                "Travel", travelListView,
-                "Food", foodListView,
-                "Health", healthListView
-        );
+        categoryMap = new HashMap<>();
+        List<Category> predefinedCategories = Category.getCategories();
+        predefinedCategories.forEach(category -> {
+            switch (category.getName()) {
+                case "General":
+                    categoryMap.put(String.valueOf(category), newsListView);
+                    break;
+                case "Tech":
+                    categoryMap.put(String.valueOf(category), techListView);
+                    break;
+                case "Entertainment":
+                    categoryMap.put(String.valueOf(category), entertainmentListView);
+                    break;
+                case "Business":
+                    categoryMap.put(String.valueOf(category), businessListView);
+                    break;
+                case "Sports":
+                    categoryMap.put(String.valueOf(category), sportsListView);
+                    break;
+                case "Politics":
+                    categoryMap.put(String.valueOf(category), politicsListView);
+                    break;
+                case "Travel":
+                    categoryMap.put(String.valueOf(category), travelListView);
+                    break;
+                case "Food":
+                    categoryMap.put(String.valueOf(category), foodListView);
+                    break;
+                case "Health":
+                    categoryMap.put(String.valueOf(category), healthListView);
+                    break;
+            }
+        });
 
         this.currentUser = User.getCurrentUser(); // Get the logged-in user
 
@@ -201,6 +196,7 @@ public class NewsController {
             System.out.println("Error: categoryMap is not initialized or is empty.");
         }
     }
+
 
     private void processArticles(List<Article> articles, Map<String, List<Integer>> preferences, ListView<HBox> listView) {
         for (Article article : articles) {
@@ -475,6 +471,8 @@ public class NewsController {
     public void ReadArticleAction(Article article) {
         // Get the article URL
         String articleUrl = article.getUrl(); // Replace with the correct method to get the article URL
+        System.out.println("Article URL: " + articleUrl);
+
 
         if (articleUrl != null && !articleUrl.isEmpty()) {
             try {

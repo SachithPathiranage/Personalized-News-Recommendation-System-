@@ -57,6 +57,13 @@ public class Article {
         this.imageUrl = imageUrl;
     }
 
+    public Article(int id, String title,String description , String url) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.url = url;
+    }
+
     // Getters and setters
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }

@@ -201,7 +201,7 @@ public class DatabaseHandler {
     // Fetch articles from the database
     public List<Article> fetchArticles() throws SQLException {
         List<Article> articles = new ArrayList<>();
-        String query = "SELECT id, title FROM news";
+        String query = "SELECT id, title, description, url FROM news";
 
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query);
@@ -210,9 +210,42 @@ public class DatabaseHandler {
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String title = resultSet.getString("title");
-                articles.add(new Article(id, title));
+                String description = resultSet.getString("description");
+                String url = resultSet.getString("url");
+
+                articles.add(new Article(id, title, description,url));
             }
         }
+        return articles;
+    }
+
+    public static List<Article> fetchNewsFromDatabase() {
+        List<Article> articles = new ArrayList<>();
+        String query = "SELECT * FROM news";
+
+        try (Connection connection = DatabaseHandler.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                int id = resultSet.getInt("id");
+                String title = resultSet.getString("title");
+                String description = resultSet.getString("description");
+                String newsUrl = resultSet.getString("url");
+                String date = resultSet.getString("published_at");
+                String author = resultSet.getString("author");
+                String source = resultSet.getString("source_name");
+                String imageUrl = resultSet.getString("image_url");
+                String category = resultSet.getString("category");
+
+                // Create org.example.OOD.Article object and add to list
+                Article article = new Article(id, title, description, newsUrl, source, author, imageUrl, date, category);
+                articles.add(article);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return articles;
     }
 
@@ -248,7 +281,6 @@ public class DatabaseHandler {
             statement.executeUpdate();
         }
     }
-
 }
 
 //    public static void testConnection() {

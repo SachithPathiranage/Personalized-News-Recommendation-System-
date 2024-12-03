@@ -1,5 +1,7 @@
 package org.example.OOD.Recommendation_Engine;
 
+import org.example.OOD.Database_Handler.DatabaseHandler;
+import org.example.OOD.Models.Article;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.net.http.HttpClient;
@@ -7,6 +9,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RecommendationEngine {
 
@@ -62,5 +65,41 @@ public class RecommendationEngine {
         } else {
             throw new RuntimeException("Failed to categorize articles: " + response.body());
         }
+    }
+
+    // New method for categorizing articles and updating the database
+    public void categorizeAndUpdateArticles(DatabaseHandler dbHandler) throws Exception {
+        // Step 1: Fetch articles from the database
+        List<Article> articles = dbHandler.fetchArticles();
+
+        if (articles.isEmpty()) {
+            System.out.println("No articles found in the database.");
+            return;
+        }
+
+        // Step 2: Extract titles and descriptions for categorization
+        List<String> titlesAndDescriptions = articles.stream()
+                .map(article -> article.getTitle() + " " + article.getDescription())  // Combine title and description
+                .collect(Collectors.toList());
+
+        System.out.println("Titles and descriptions to categorize: " + titlesAndDescriptions);
+
+        // Step 3: Categorize articles using both title and description
+        String[] categories = categorizeArticles(titlesAndDescriptions);
+
+        // Step 4: Update the database with categories
+        for (int i = 0; i < articles.size(); i++) {
+            Article article = articles.get(i);
+            String category = categories[i];
+
+            // Update article category in the database
+            dbHandler.updateArticleCategory(article.getId(), category);
+            System.out.println("Article ID: " + article.getId() +
+                    " | Title: " + article.getTitle() +
+                    " | Description: " + article.getDescription() +
+                    " | Predicted Category: " + category);
+        }
+
+        System.out.println("Categorization complete!");
     }
 }

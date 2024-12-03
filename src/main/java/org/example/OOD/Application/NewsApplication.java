@@ -46,38 +46,14 @@ public class NewsApplication extends Application {
 //            newsAPIHandler.fetchAndSaveNewsArticles(category);
 //        }
         try {
-            // Step 1: Fetch articles from the database
+            // Step 1: Get the database handler instance
             DatabaseHandler dbHandler = DatabaseHandler.getInstance();
-            List<Article> articles = dbHandler.fetchArticles();
 
-            if (articles.isEmpty()) {
-                System.out.println("No articles found in the database.");
-                return;
-            }
-
-            // Step 2: Extract titles for categorization
+            // Step 2: Create the RecommendationEngine instance
             RecommendationEngine recommendationEngine = new RecommendationEngine();
-            List<String> titles = articles.stream()
-                    .map(Article::getTitle)
-                    .toList(); // Convert to a list of titles
 
-            System.out.println("Titles to categorize: " + titles);
-
-            // Step 3: Categorize articles
-            String[] categories = recommendationEngine.categorizeArticles(titles);
-
-            // Step 4: Update the database with categories
-            for (int i = 0; i < articles.size(); i++) {
-                Article article = articles.get(i);
-                String category = categories[i];
-
-                dbHandler.updateArticleCategory(article.getId(), category);
-                System.out.println("Article ID: " + article.getId() +
-                        " | Title: " + article.getTitle() +
-                        " | Predicted Category: " + category);
-            }
-
-            System.out.println("Categorization complete!");
+            // Step 3: Call the method to categorize and update articles
+            recommendationEngine.categorizeAndUpdateArticles(dbHandler);
 
         } catch (SQLException e) {
             System.err.println("Database error: " + e.getMessage());
