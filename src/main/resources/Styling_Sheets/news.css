@@ -247,3 +247,16 @@
 .scroll-bar:horizontal .thumb:hover {
     -fx-background-color: #999; /* Darker thumb on hover */
 }
+
+.top-right-hbox {
+    -fx-alignment: top-right; /* Ensure right alignment */
+}
+#preferencesButton {
+    -fx-background-image: url('../Images/user.png');
+    -fx-background-size: 24 24;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: transparent;
+    -fx-min-width: 24;
+    -fx-min-height: 24;
+}

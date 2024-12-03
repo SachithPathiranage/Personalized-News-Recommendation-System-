@@ -114,8 +114,6 @@ public class Login_SignupController {
         return null; // Return null if authentication fails
     }
 
-
-
     @FXML
     private void openSignUp() {
         try {

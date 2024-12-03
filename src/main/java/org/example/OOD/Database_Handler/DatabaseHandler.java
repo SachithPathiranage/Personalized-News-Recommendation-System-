@@ -142,6 +142,32 @@ public class DatabaseHandler {
         return preferencesMap;
     }
 
+    public List<Map<String, Object>> fetchUserPreferencesWithTimestamp(String userId, String preferenceType) throws SQLException {
+        List<Map<String, Object>> preferencesList = new ArrayList<>();
+
+        String query = "SELECT article_id, created_at FROM user_preferences WHERE user_id = ? AND preference_type = ?";
+
+        try (Connection connection = DatabaseHandler.getInstance().getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, userId);
+            statement.setString(2, preferenceType);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int articleId = resultSet.getInt("article_id");
+                    Timestamp createdAt = resultSet.getTimestamp("created_at");
+
+                    Map<String, Object> preferenceDetails = new HashMap<>();
+                    preferenceDetails.put("articleId", articleId);
+                    preferenceDetails.put("createdAt", createdAt);
+
+                    preferencesList.add(preferenceDetails);
+                }
+            }
+        }
+
+        return preferencesList;
+    }
 
     public boolean isPreferenceRecorded(String userId, int articleId, String preferenceType) throws SQLException {
         String query = "SELECT COUNT(*) FROM user_preferences WHERE user_id = ? AND article_id = ? AND preference_type = ?";

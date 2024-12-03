@@ -45,7 +45,7 @@
 
         <!-- Style -->
         <stylesheets>
-            <URL value="@login.css" />
+            <URL value="@../Styling_Sheets/login.css" />
         </stylesheets>
     </BorderPane>
 

@@ -1,6 +1,7 @@
 package org.example.OOD.Controllers;
 
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -19,8 +20,8 @@ import javafx.stage.Stage;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.example.OOD.Models.Article;
 import org.example.OOD.Database_Handler.DatabaseHandler;
+import org.example.OOD.Models.Article;
 import org.example.OOD.Models.User;
 import org.example.OOD.Models.UserPreferences;
 
@@ -33,7 +34,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class NewsController {
     @FXML
@@ -334,11 +338,11 @@ public class NewsController {
             // Like button action
             likeButton.setOnAction(event -> {
                 if (preferences.isLiked(article)) {
-                    preferences.removeLikedArticle(article,currentUser.getId());
+                    preferences.removeLikedArticle(article, currentUser.getId());
                     likeButton.setText("👍 Like");
                     likeButton.setStyle(""); // Reset to no color
                 } else {
-                    preferences.addLikedArticle(article,currentUser.getId());
+                    preferences.addLikedArticle(article, currentUser.getId());
                     likeButton.setText("Unlike");
                     likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125; -fx-border-color: #031452"); // Blue for liked
                     dislikeButton.setText("👎 Dislike");
@@ -349,7 +353,7 @@ public class NewsController {
             // Dislike button action
             dislikeButton.setOnAction(event -> {
                 if (preferences.isDisliked(article)) {
-                    preferences.removeDislikedArticle(article,currentUser.getId());
+                    preferences.removeDislikedArticle(article, currentUser.getId());
                     dislikeButton.setText("👎 Dislike");
                     dislikeButton.setStyle(""); // Reset to no color
                 } else {
@@ -503,4 +507,23 @@ public class NewsController {
             System.out.println("Invalid article URL.");
         }
     }
+
+    @FXML
+    public void handleUserIconClick() {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Design_Files/user_preferences.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the User Preferences window
+            Stage userPreferencesStage = new Stage();
+            userPreferencesStage.setTitle("User Logs");
+            userPreferencesStage.setScene(new Scene(root, 760, 620));
+            userPreferencesStage.setResizable(false);
+            userPreferencesStage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // Log any issues loading the FXML file
+        }
+    }
 }
+
