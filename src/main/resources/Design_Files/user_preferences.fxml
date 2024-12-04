@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="607.0" prefWidth="749.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.UserLogs_Controller">
+    <stylesheets>
+        <URL value="@../Styling_Sheets/preferences.css" />
+    </stylesheets>
+
+    <!-- Add ScrollPane to wrap VBox -->
+    <ScrollPane fitToWidth="true" prefHeight="620.0" prefWidth="760.0" styleClass="scroll-pane">
+        <VBox alignment="TOP_CENTER" layoutX="68.0" layoutY="10.0" prefHeight="1104.0" prefWidth="718.0" spacing="20.0" styleClass="content-container" AnchorPane.leftAnchor="48.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="-10.0">
+            <padding>
+                <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+            </padding>
+            <Label styleClass="section-title" text="Articles You Have Read" />
+            <ListView fx:id="readArticlesListView" prefHeight="226.0" prefWidth="678.0" />
+
+            <Label styleClass="section-title" text="Liked Articles" />
+            <ListView fx:id="likedArticlesListView" prefHeight="231.0" prefWidth="678.0" />
+
+            <Label styleClass="section-title" text="Disliked Articles" />
+            <ListView fx:id="dislikedArticlesListView" prefHeight="232.0" prefWidth="678.0" />
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

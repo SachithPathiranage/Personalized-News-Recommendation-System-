@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.Personalized_Controller">
+    <!-- Top Bar for Branding or Navigation -->
+    <VBox prefHeight="42.0" prefWidth="800.0" spacing="10" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox alignment="TOP_RIGHT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="57.0" prefWidth="800.0" spacing="10" styleClass="top-right-hbox" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+            <children>
+                <Button fx:id="forYouButton"  prefHeight="57.0" prefWidth="61.0">  </Button>
+            </children>
+        </HBox>
+        <Separator />
+
+    </VBox>
+
+    <VBox prefWidth="1030" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
+        <ListView fx:id="personalizedListView" prefHeight="530" prefWidth="800">
+            <!-- Custom List Cell -->
+            <items>
+                <!-- Placeholder will be dynamically populated -->
+            </items>
+        </ListView>
+    </VBox>
+
+
+    <Label alignment="CENTER" layoutX="-1.0" layoutY="-7.0" prefHeight="81.0" prefWidth="321.0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10px " text="News Articles for You" />
+    <stylesheets>
+        <URL value="@../Styling_Sheets/forYou.css" />
+    </stylesheets>
+
+</AnchorPane>

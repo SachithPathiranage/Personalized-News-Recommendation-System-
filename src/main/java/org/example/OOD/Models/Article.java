@@ -14,40 +14,13 @@ public class Article {
     private AtomicInteger likes;
     private AtomicInteger dislikes;
     private String category;
+    private String content;
+
+    // Adding similarityScore field
+    private double similarityScore;
 
 
     // Constructor
-    public Article(int id, String title, String description, String url, String source_name, String author, String imageUrl, String publishedDate) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.url = url;
-        this.source_name = source_name;
-        this.author = author;
-        this.imageUrl = imageUrl;
-        this.publishedDate = publishedDate;
-        this.likes = new AtomicInteger(0);
-        this.dislikes = new AtomicInteger(0);
-    }
-    public Article(int id, String title) {
-        this.id = id;
-        this.title = title;
-    }
-
-    public Article(int id, String title, String description, String newsUrl, String source, String author, String imageUrl, String date, String category) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.url = newsUrl;
-        this.source_name = source;
-        this.author = author;
-        this.imageUrl = imageUrl;
-        this.publishedDate = date;
-        this.likes = new AtomicInteger(0);
-        this.dislikes = new AtomicInteger(0);
-        this.category = category;
-    }
-
     public Article(int id, String title, String description, String sourceName, String publishedDate, String imageUrl, String category) {
         this.id = id;
         this.title = title;
@@ -62,6 +35,29 @@ public class Article {
         this.title = title;
         this.description = description;
         this.url = url;
+    }
+
+    public Article(int id, String title, String description, String content, String category) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.content = content;
+        this.category = category;
+    }
+
+    public Article(int id, String title, String description, String newsUrl, String source, String author, String imageUrl, String date, String category, String content) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.url = newsUrl;
+        this.source_name = source;
+        this.author = author;
+        this.imageUrl = imageUrl;
+        this.publishedDate = date;
+        this.likes = new AtomicInteger(0);
+        this.dislikes = new AtomicInteger(0);
+        this.category = category;
+        this.content = content;
     }
 
     // Getters and setters
@@ -99,6 +95,14 @@ public class Article {
     public String getPublishedDate() { return publishedDate; }
     public void setPublishedDate(String publishedDate) { this.publishedDate = publishedDate; }
 
+    public String getContent() {
+        return content;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
     public int getLikes() {
         return likes.get();
     }
@@ -116,6 +120,21 @@ public class Article {
     public void dislikeArticle() {
         dislikes.incrementAndGet(); // Thread-safe increment
         System.out.println("Article disliked! Total dislikes: " + dislikes);
+    }
+
+    // Getter and Setter for similarityScore
+    public double getSimilarityScore() {
+        return similarityScore;
+    }
+
+    public void setSimilarityScore(double similarityScore) {
+        this.similarityScore = similarityScore;
+    }
+
+    // Method to get textual content of the article (for similarity computation)
+    public String getText() {
+        String baseText = (content != null && !content.isEmpty()) ? content : description;
+        return (baseText != null && category != null) ? baseText + " " + category : baseText;
     }
 }
 

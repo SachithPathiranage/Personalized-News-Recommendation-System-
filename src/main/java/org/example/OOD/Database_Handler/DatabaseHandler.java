@@ -237,9 +237,11 @@ public class DatabaseHandler {
                 String source = resultSet.getString("source_name");
                 String imageUrl = resultSet.getString("image_url");
                 String category = resultSet.getString("category");
+                String content = resultSet.getString("content");
+
 
                 // Create org.example.OOD.Article object and add to list
-                Article article = new Article(id, title, description, newsUrl, source, author, imageUrl, date, category);
+                Article article = new Article(id, title, description, newsUrl, source, author, imageUrl, date, category, content);
                 articles.add(article);
             }
         } catch (Exception e) {
@@ -267,6 +269,31 @@ public class DatabaseHandler {
             }
         }
         return articles;
+    }
+
+    public Article fetchArticleById(int articleId) throws SQLException {
+        Article article = null;
+        String query = "SELECT id, title, description, content, category FROM news WHERE id = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setInt(1, articleId);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+                    String title = resultSet.getString("title");
+                    String description = resultSet.getString("description");
+                    String content = resultSet.getString("content");
+                    String category = resultSet.getString("category");
+
+                    // Create an Article object
+                    article = new Article(articleId, title, description, content, category);
+                }
+            }
+        }
+
+        return article;
     }
 
 

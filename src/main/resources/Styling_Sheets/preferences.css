@@ -1,0 +1,207 @@
+.section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    padding-bottom: 10px;
+}
+
+/* Root Styles */
+.root {
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+    -fx-background-color: linear-gradient(to bottom, #1E3C72, #2A5298); /* Blue gradient background */
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+}
+
+/* Style for ListView (Articles) */
+.list-view {
+    -fx-background-color: #F0F8FF; /* Light background for list items */
+    -fx-border-color: #2A5298;
+    -fx-border-radius: 10px;
+    -fx-padding: 10px;
+    -fx-spacing: 10px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 2); /* Shadow for depth */
+}
+
+.list-view .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-alignment: center-left;
+    -fx-font-weight: bold;
+    -fx-line-spacing: 5px;
+}
+
+.list-view .list-cell:hover {
+    -fx-background-color: #B0E0E6; /* Light blue hover effect */
+    -fx-cursor: hand;
+}
+
+/* Style for Buttons (If Any) */
+.button {
+    -fx-background-color: #2A5298;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-cursor: pointer;
+}
+
+.button:hover {
+    -fx-background-color: #1E3C72; /* Darker blue on hover */
+}
+
+/* Header Styles */
+.header {
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-padding: 20px 0;
+    -fx-alignment: center;
+}
+
+/* Label Styles for Articles (e.g., Title, Timestamp) */
+.label {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-font-weight: lighter;
+}
+
+/* Style for Article Titles */
+.article-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 10px 0;
+}
+
+/* Style for the Content Section */
+.content-section {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 20px;
+    -fx-border-radius: 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 2);
+}
+
+/* Section Title for Clarity */
+.section-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #e2ecff;
+    -fx-padding: 15px 0;
+}
+
+/* Add Footer Style (if you have one) */
+.footer {
+    -fx-text-fill: #BBBBBB;
+    -fx-font-size: 14px;
+    -fx-padding: 10px 0;
+    -fx-alignment: center;
+}
+
+/* Add some general alignment */
+.center {
+    -fx-alignment: center;
+}
+
+.left {
+    -fx-alignment: center-left;
+}
+
+.right {
+    -fx-alignment: center-right;
+}
+
+/* Subtle hover effect for each article list item */
+.list-cell:hover {
+    -fx-background-color: #ADD8E6;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+}
+
+/* Beautiful focus state for selected items */
+.list-cell:selected {
+    -fx-background-color: #7EC8E3;
+    -fx-text-fill: white;
+}
+
+/* ScrollPane styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 10px;
+    -fx-vbar-policy: ALWAYS; /* Always show vertical scrollbar */
+    -fx-hbar-policy: NEVER;  /* Hide horizontal scrollbar */
+    /*-fx-background-color: #f0f0f0; /* Light background color */
+}
+
+/* Scrollbar styles */
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar {
+    -fx-background-color: rgba(0, 0, 0, 0.1);  /* Subtle background for the scrollbar */
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-pref-width: 10px;
+    -fx-background-color: #ADD8E6;  /* Light blue vertical scrollbar */
+}
+
+.scroll-pane .thumb {
+    -fx-background-color: #2A5298;  /* Darker thumb for better visibility */
+}
+
+/* Style the VBox container */
+.content-container {
+    -fx-padding: 20;
+    -fx-spacing: 20;
+    -fx-alignment: TOP_CENTER;
+}
+
+/* Styling for each article row (HBox) */
+.article-row {
+    -fx-background-color: #ffffff; /* White background for rows */
+    -fx-border-color: #e0e0e0; /* Light border for separation */
+    -fx-border-width: 1px;
+    -fx-padding: 10px;
+    -fx-margin: 5px 0;
+    -fx-effect: dropshadow(gaussian, #000000, 5, 0.0, 0, 1); /* Soft shadow for depth */
+    -fx-background-radius: 5px; /* Rounded corners */
+    -fx-alignment: center-left;
+}
+
+/* Styling for the article title label */
+.article-label {
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333; /* Dark text for better readability */
+    -fx-font-weight: bold;
+    -fx-wrap-text: true; /* Allow text to wrap */
+    -fx-max-width: 520px; /* Max width to avoid overflowing */
+    -fx-line-spacing: 2px;
+}
+
+/* Styling for the 'Remove' button */
+.remove-button {
+    -fx-background-color: #e74c3c; /* Red color for removal */
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-cursor: hand;
+    -fx-opacity: 0.8;
+}
+
+.remove-button:hover {
+    -fx-opacity: 1;
+    -fx-background-color: #c0392b; /* Darker red on hover */
+}
+
+/* Optional: Styling for the title hover effect */
+.article-row:hover {
+    -fx-background-color: #f1f1f1; /* Light grey on hover for row */
+    -fx-cursor: hand; /* Show a pointer cursor when hovering */
+}

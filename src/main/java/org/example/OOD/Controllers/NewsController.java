@@ -6,6 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -31,11 +32,7 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -519,6 +516,27 @@ public class NewsController {
             userPreferencesStage.setScene(new Scene(root, 760, 620));
             userPreferencesStage.setResizable(false);
             userPreferencesStage.show();
+        } catch (IOException e) {
+            e.printStackTrace(); // Log any issues loading the FXML file
+        }
+    }
+
+
+    public void ForYouButtonClick(ActionEvent actionEvent) {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Design_Files/For_you.fxml"));
+            Parent root = loader.load();
+
+            // Create a new stage for the User Preferences window
+            Stage ForYouStage = new Stage();
+            ForYouStage.setTitle("For You");
+            ForYouStage.setScene(new Scene(root, 1110, 650));
+            ForYouStage.setResizable(false);
+            ForYouStage.show();
+
+            Stage previousStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            previousStage.close();
         } catch (IOException e) {
             e.printStackTrace(); // Log any issues loading the FXML file
         }

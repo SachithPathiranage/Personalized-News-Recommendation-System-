@@ -11,6 +11,7 @@ module org.example.personalizednewsrecommendationsystem {
     requires org.apache.httpcomponents.httpcore;
     requires javafx.web;
     requires java.net.http;
+    requires lucene.analyzers.common;
 
     opens org.example.OOD.Controllers to javafx.fxml;
 
