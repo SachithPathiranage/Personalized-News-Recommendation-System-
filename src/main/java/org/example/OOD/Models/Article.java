@@ -11,8 +11,9 @@ public class Article {
     private String author;
     private String imageUrl;
     private String publishedDate;
-    private AtomicInteger likes;
-    private AtomicInteger dislikes;
+    private int likes;
+    private int dislikes;
+    private int readers;
     private String category;
     private String content;
 
@@ -45,7 +46,7 @@ public class Article {
         this.category = category;
     }
 
-    public Article(int id, String title, String description, String newsUrl, String source, String author, String imageUrl, String date, String category, String content) {
+    public Article(int id, String title, String description, String newsUrl, String source, String author, String imageUrl, String date, String category, String content, int likes, int dislikes, int readers) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -54,11 +55,13 @@ public class Article {
         this.author = author;
         this.imageUrl = imageUrl;
         this.publishedDate = date;
-        this.likes = new AtomicInteger(0);
-        this.dislikes = new AtomicInteger(0);
         this.category = category;
         this.content = content;
+        this.likes = likes;
+        this.dislikes = dislikes;
+        this.readers = readers;
     }
+
 
     // Getters and setters
     public int getId() { return id; }
@@ -103,24 +106,15 @@ public class Article {
         return category;
     }
 
-    public int getLikes() {
-        return likes.get();
-    }
 
-    public int getDislikes() {
-        return dislikes.get();
-    }
+    public int getLikes() { return likes; }
+    public void setLikes(int likes) { this.likes = likes; }
 
-    // Methods to like and dislike the article
-    public void likeArticle() {
-        likes.incrementAndGet(); // Thread-safe increment
-        System.out.println("Article liked! Total likes: " + likes);
-    }
+    public int getDislikes() { return dislikes; }
+    public void setDislikes(int dislikes) { this.dislikes = dislikes; }
 
-    public void dislikeArticle() {
-        dislikes.incrementAndGet(); // Thread-safe increment
-        System.out.println("Article disliked! Total dislikes: " + dislikes);
-    }
+    public int getReaders() { return readers; }
+    public void setReaders(int readers) { this.readers = readers; }
 
     // Getter and Setter for similarityScore
     public double getSimilarityScore() {
@@ -135,6 +129,18 @@ public class Article {
     public String getText() {
         String baseText = (content != null && !content.isEmpty()) ? content : description;
         return (baseText != null && category != null) ? baseText + " " + category : baseText;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    @Override
+    public String toString() {
+        return "Article{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", description='" + description;
     }
 }
 

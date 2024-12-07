@@ -121,7 +121,7 @@ public class NewsController {
 
             try {
                 // Fetch user preferences in one go
-                Map<String, List<Integer>> userPreferences = fetchUserPreferences(currentUser.getId());
+                Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
 
                 // Log preferences for debugging
                 logPreferences(userPreferences);
@@ -141,17 +141,17 @@ public class NewsController {
         }
     }
 
-    // Fetch user preferences and organize them into a map
-    private Map<String, List<Integer>> fetchUserPreferences(String userId) throws SQLException {
-        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
-        Map<String, List<Integer>> preferences = new HashMap<>();
-
-        preferences.put("liked", dbHandler.fetchUserPreferences(userId, "liked"));
-        preferences.put("disliked", dbHandler.fetchUserPreferences(userId, "disliked"));
-        preferences.put("read", dbHandler.fetchUserPreferences(userId, "read"));
-
-        return preferences;
-    }
+//    // Fetch user preferences and organize them into a map
+//    private Map<String, List<Integer>> fetchUserPreferences(String userId) throws SQLException {
+//        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+//        Map<String, List<Integer>> preferences = new HashMap<>();
+//
+//        preferences.put("liked", dbHandler.fetchUserPreferences(userId, "liked"));
+//        preferences.put("disliked", dbHandler.fetchUserPreferences(userId, "disliked"));
+//        preferences.put("read", dbHandler.fetchUserPreferences(userId, "read"));
+//
+//        return preferences;
+//    }
 
     // Log user preferences for debugging
     private void logPreferences(Map<String, List<Integer>> preferences) {
@@ -393,6 +393,76 @@ public class NewsController {
 
         return cellContainer;
     }
+
+    private void initializeArticleButtons(User currentUser, Article article, Button likeButton, Button dislikeButton, Button readButton) {
+        if (currentUser != null) {
+            UserPreferences preferences = currentUser.getPreferences();
+
+            // Set initial button labels and styles
+            if (preferences.isLiked(article)) {
+                likeButton.setText("Unlike");
+                likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125;");
+            } else {
+                likeButton.setText("👍 Like");
+                likeButton.setStyle("");
+            }
+
+            if (preferences.isDisliked(article)) {
+                dislikeButton.setText("Remove Dislike");
+                dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125;");
+            } else {
+                dislikeButton.setText("👎 Dislike");
+                dislikeButton.setStyle("");
+            }
+
+            if (preferences.isRead(article)) {
+                readButton.setText("Read Again ✅");
+                readButton.setStyle("-fx-background-color: #59ea59;");
+            } else {
+                readButton.setText("📖 Read");
+                readButton.setStyle("");
+            }
+
+            // Like button action
+            likeButton.setOnAction(event -> {
+                if (preferences.isLiked(article)) {
+                    preferences.removeLikedArticle(article, currentUser.getId());
+                    likeButton.setText("👍 Like");
+                    likeButton.setStyle(""); // Reset to no color
+                } else {
+                    preferences.addLikedArticle(article, currentUser.getId());
+                    likeButton.setText("Unlike");
+                    likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125; -fx-border-color: #031452"); // Blue for liked
+                    dislikeButton.setText("👎 Dislike");
+                    dislikeButton.setStyle(""); // Reset dislike button
+                }
+            });
+
+            // Dislike button action
+            dislikeButton.setOnAction(event -> {
+                if (preferences.isDisliked(article)) {
+                    preferences.removeDislikedArticle(article, currentUser.getId());
+                    dislikeButton.setText("👎 Dislike");
+                    dislikeButton.setStyle(""); // Reset to no color
+                } else {
+                    preferences.addDislikedArticle(article, currentUser.getId());
+                    dislikeButton.setText("Remove Dislike");
+                    dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125; -fx-border-color: #500202"); // Red for disliked
+                    likeButton.setText("👍 Like");
+                    likeButton.setStyle(""); // Reset like button
+                }
+            });
+
+            // Read button action
+            readButton.setOnAction(event -> {
+                ReadArticleAction(article); // Custom method to perform reading action
+                preferences.addReadArticle(article, currentUser.getId());
+                readButton.setText("Read Again ✅");
+                readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d"); // Update to show article was read
+            });
+        }
+    }
+
 
     /**
      * Resolves redirects for the given URL.

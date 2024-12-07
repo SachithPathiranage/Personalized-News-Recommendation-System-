@@ -133,7 +133,6 @@ public class UserLogs_Controller {
         }
     }
 
-
     private void updateUserPreferences(String preferenceType, Article article) {
         switch (preferenceType.toLowerCase()) {
             case "liked":
@@ -164,7 +163,7 @@ public class UserLogs_Controller {
             if (article != null) {
                 System.out.println("Found article: " + article.getTitle());
                 NewsController newsController = new NewsController();
-                newsController.ReadArticleAction(article);  // Assuming this method handles the reading action
+                newsController.ReadArticleAction(article);  // Handles the reading action
             } else {
                 System.out.println("Article not found for title: " + title);
             }

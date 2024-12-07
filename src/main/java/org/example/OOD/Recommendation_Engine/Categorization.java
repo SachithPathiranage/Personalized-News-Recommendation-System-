@@ -11,7 +11,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class RecommendationEngine {
+public class Categorization {
 
     public String[] categorizeArticles(List<String> articles) throws Exception {
         // Create a JSON array to hold the article objects
@@ -82,7 +82,7 @@ public class RecommendationEngine {
                 .map(article -> article.getTitle() + " " + article.getDescription())  // Combine title and description
                 .collect(Collectors.toList());
 
-        System.out.println("Titles and descriptions to categorize: " + titlesAndDescriptions);
+        //System.out.println("Titles and descriptions to categorize: " + titlesAndDescriptions);
 
         // Step 3: Categorize articles using both title and description
         String[] categories = categorizeArticles(titlesAndDescriptions);

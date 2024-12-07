@@ -14,6 +14,7 @@ module org.example.personalizednewsrecommendationsystem {
     requires lucene.analyzers.common;
 
     opens org.example.OOD.Controllers to javafx.fxml;
+    opens org.example.OOD.Models to javafx.base;  // Add this line
 
     exports org.example.OOD.Application;
 }

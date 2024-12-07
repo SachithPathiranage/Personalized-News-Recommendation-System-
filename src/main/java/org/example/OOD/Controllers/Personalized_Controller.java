@@ -24,9 +24,6 @@ public class Personalized_Controller {
     @FXML
     private ListView<HBox> personalizedListView; // The main ListView for personalized news
 
-    @FXML
-    private WebView webView; // WebView for article details
-
     private User currentUser; // Current logged-in user
 
     /**
@@ -48,7 +45,7 @@ public class Personalized_Controller {
 
         try {
             // Fetch the top N recommended articles (e.g., top 5)
-            List<Article> recommendations = personalize.recommendArticles(currentUser.getId(), 5);
+            List<Article> recommendations = personalize.recommendArticles(currentUser.getId(), 10);
 
             if (recommendations.isEmpty()) {
                 System.out.println("No recommendations available.");
@@ -163,29 +160,46 @@ public class Personalized_Controller {
      * Setup actions for Like, Dislike, and Read buttons.
      */
     private void setupButtonActions(Button likeButton, Button dislikeButton, Button readButton, Article article, UserPreferences preferences) {
+        // Like button action
         likeButton.setOnAction(event -> {
             if (preferences.isLiked(article)) {
                 preferences.removeLikedArticle(article, currentUser.getId());
                 likeButton.setText("👍 Like");
+                likeButton.setStyle(""); // Reset to no color
             } else {
                 preferences.addLikedArticle(article, currentUser.getId());
                 likeButton.setText("Unlike");
+                likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125; -fx-border-color: #031452"); // Blue for liked
+                dislikeButton.setText("👎 Dislike");
+                dislikeButton.setStyle(""); // Reset dislike button
             }
         });
 
+        // Dislike button action
         dislikeButton.setOnAction(event -> {
             if (preferences.isDisliked(article)) {
                 preferences.removeDislikedArticle(article, currentUser.getId());
                 dislikeButton.setText("👎 Dislike");
+                dislikeButton.setStyle(""); // Reset to no color
             } else {
                 preferences.addDislikedArticle(article, currentUser.getId());
                 dislikeButton.setText("Remove Dislike");
+                dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125; -fx-border-color: #500202"); // Red for disliked
+                likeButton.setText("👍 Like");
+                likeButton.setStyle(""); // Reset like button
             }
         });
 
         readButton.setOnAction(event -> {
+            NewsController newsController = new NewsController();
+            newsController.ReadArticleAction(article);  // Handles the reading action
             preferences.addReadArticle(article, currentUser.getId());
             readButton.setText("Read Again ✅");
+            readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d"); // Update to show article was read
         });
+
+        readButton.getStyleClass().add("read-button");
+        likeButton.getStyleClass().add("like-button");
+        dislikeButton.getStyleClass().add("dislike-button");
     }
 }

@@ -69,6 +69,7 @@
     -fx-border-radius: 3;
     -fx-padding: 5;
     -fx-cursor: hand;
+    -fx-font-family: "Franklin Gothic Demi";
 }
 
 .button:hover {
@@ -120,7 +121,7 @@
 
 /* General Layout */
 .root {
-    -fx-font-family: "Times New Roman", sans-serif;
+    -fx-font-family: "Arial, Helvetica, sans-serif";
     -fx-background-color: #f4f8fc; /* Light blue background */
 }
 
@@ -149,7 +150,8 @@
     -fx-text-fill: #555; /* Text color */
     -fx-border-color: transparent; /* Default border (invisible) */
     -fx-border-radius: 10; /* Rounded corners */
-    -fx-font-size: 16px
+    -fx-font-size: 16px;
+    -fx-font-family: "Franklin Gothic Medium";
 }
 
 /* Tab Hover Effect */

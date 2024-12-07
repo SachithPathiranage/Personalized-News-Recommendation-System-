@@ -10,7 +10,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.*;
-import java.util.List;
 
 import static org.example.OOD.Database_Handler.DatabaseHandler.getConnection;
 

@@ -21,12 +21,12 @@ public class Personalize {
 
         for (Article article : userPreferredArticles) {
             List<String> articleKeywords = extractKeywords(article.getText());
-            System.out.println(articleKeywords);
 
             // Add article category as a keyword
-            keywords.add(article.getCategory().toLowerCase());  // Include category as a keyword
+            keywords.add(article.getCategory());  // Include category as a keyword
 
             keywords.addAll(articleKeywords);
+            System.out.println(keywords);
         }
 
         return keywords.stream()
@@ -61,7 +61,7 @@ public class Personalize {
                 .collect(Collectors.toList());
 
         // Extract keywords from the article using the TF-IDF method from KeywordExtractor
-        List<String> keywords = extractor.extractKeywordsUsingTFIDF(articleText, corpus);
+        List<String> keywords = extractor.extractKeywordsBlended(articleText, corpus);
 
         // Remove stopwords from the extracted keywords
         Set<String> stopwords = getStopwords();
@@ -118,26 +118,75 @@ public class Personalize {
 
     // 4. Method to recommend articles based on the keywords extracted from user preferences
     public List<Article> recommendArticles(String userId, int topN) throws SQLException {
+        // Extract keywords from user preferences
         List<String> userKeywords = extractKeywordsFromUserPreferences(userId);
+
+        // Fetch all articles from the database
         DatabaseHandler.getInstance();
         List<Article> allArticles = DatabaseHandler.fetchNewsFromDatabase();
 
+        // Fetch user's preferred categories (based on liked or read articles)
+        List<String> preferredCategories = fetchPreferredCategories(userId);
+        System.out.println(preferredCategories);
+
+        // List to store recommended articles
         List<Article> recommendedArticles = new ArrayList<>();
 
         for (Article article : allArticles) {
+            // Calculate similarity score based on keywords
             double similarityScore = computeCosineSimilarity(userKeywords, article.getText());
-            if (similarityScore > 0.1) {  // A threshold for similarity (this can be adjusted)
+
+
+            // Boost score if the article belongs to a preferred category
+            if (preferredCategories.contains(article.getCategory())) {
+                similarityScore *= 1.5; // Boost factor for preferred categories
+                System.out.println( article.getTitle() + " - " + article.getCategory()+ " - " + preferredCategories.contains(article.getCategory()));
+                System.out.println(similarityScore);
+            }
+
+            // Consider the article if it meets a threshold
+            if (similarityScore > 0.1) { // Threshold for similarity (adjustable)
                 article.setSimilarityScore(similarityScore);
                 recommendedArticles.add(article);
             }
         }
 
+        // Sort articles by similarity score in descending order
         recommendedArticles.sort((a, b) -> Double.compare(b.getSimilarityScore(), a.getSimilarityScore()));
 
+        // Return the top N recommended articles
         return recommendedArticles.stream()
-                .limit(topN)  // Limit to top N articles
+                .limit(topN)
                 .collect(Collectors.toList());
     }
+
+    private List<String> fetchPreferredCategories(String userId) throws SQLException {
+        // Fetch all user preferences using the provided method
+        Map<String, List<Integer>> preferencesMap = DatabaseHandler.getInstance().fetchAllUserPreferences(userId);
+
+        // Combine liked and read articles (disliked articles are not relevant for category preference)
+        Set<Integer> preferredArticleIds = new HashSet<>();
+        preferredArticleIds.addAll(preferencesMap.get("liked"));
+        preferredArticleIds.addAll(preferencesMap.get("read"));
+
+        // Use a Set to avoid duplicate categories
+        Set<String> preferredCategories = new HashSet<>();
+
+        // Iterate through each article ID and fetch its category
+        for (int articleId : preferredArticleIds) {
+            String category = DatabaseHandler.getInstance().fetchArticleCategoryById(articleId);
+            if (category != null && !category.isEmpty()) {
+                preferredCategories.add(category);
+            }
+        }
+
+        // Debug: Print the preferred categories
+        System.out.println(preferredCategories);
+
+        // Convert Set to List and return
+        return new ArrayList<>(preferredCategories);
+    }
+
 
     // 5. Helper method to get a list of stopwords (optional)
     private Set<String> getStopwords() {

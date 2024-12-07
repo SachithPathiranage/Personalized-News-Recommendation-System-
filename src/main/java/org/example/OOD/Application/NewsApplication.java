@@ -7,15 +7,10 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.example.OOD.Article_Fetcher.NewsAPIHandler;
 import org.example.OOD.Database_Handler.DatabaseHandler;
-import org.example.OOD.Models.Article;
-import org.example.OOD.Recommendation_Engine.RecommendationEngine;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.example.OOD.Recommendation_Engine.Categorization;
 
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.*;
 
 public class NewsApplication extends Application {
     @Override
@@ -36,7 +31,7 @@ public class NewsApplication extends Application {
     }
 
     public static void main(String[] args) {
-        //Login_SignupController.testConnection();
+//        //Login_SignupController.testConnection();
 //        NewsAPIHandler newsAPIHandler = new NewsAPIHandler();
 //
 //        // List of categories to fetch
@@ -49,11 +44,11 @@ public class NewsApplication extends Application {
             // Step 1: Get the database handler instance
             DatabaseHandler dbHandler = DatabaseHandler.getInstance();
 
-            // Step 2: Create the RecommendationEngine instance
-            RecommendationEngine recommendationEngine = new RecommendationEngine();
+            // Step 2: Create the Categorization instance
+            Categorization categorization = new Categorization();
 
             // Step 3: Call the method to categorize and update articles
-            recommendationEngine.categorizeAndUpdateArticles(dbHandler);
+            categorization.categorizeAndUpdateArticles(dbHandler);
 
         } catch (SQLException e) {
             System.err.println("Database error: " + e.getMessage());

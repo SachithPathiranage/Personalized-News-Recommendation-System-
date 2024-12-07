@@ -93,6 +93,30 @@ public class KeywordExtractor {
                 .collect(Collectors.toList());
     }
 
+    public List<String> extractKeywordsBlended(String text, List<String> corpus) {
+        // Extract keywords using TF-IDF
+        List<String> tfidfKeywords = extractKeywordsUsingTFIDF(text, corpus);
+
+        // Extract keywords using RAKE
+        List<String> rakeKeywords = extractKeywordsUsingRAKE(text);
+
+        // Combine all keywords
+        Set<String> combinedKeywords = new LinkedHashSet<>();
+        combinedKeywords.addAll(tfidfKeywords);
+        combinedKeywords.addAll(rakeKeywords);
+
+        // Split phrases into individual words and collect unique words
+        Set<String> uniqueWords = combinedKeywords.stream()
+                .flatMap(phrase -> Arrays.stream(phrase.split("\\s+"))) // Split each phrase by spaces
+                .map(String::toLowerCase) // Normalize case
+                .filter(word -> !word.isEmpty()) // Filter out empty words
+                .collect(Collectors.toCollection(LinkedHashSet::new)); // Maintain insertion order and uniqueness
+
+        // Convert to a list and return
+        return new ArrayList<>(uniqueWords);
+    }
+
+
     // Helper method to determine if a word is likely a noun
     private boolean isNoun(String word) {
         // A simple approach: consider words with 2 or more characters as potential nouns
