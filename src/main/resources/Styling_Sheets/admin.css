@@ -1,0 +1,156 @@
+/* General Styling */
+.root {
+    -fx-font-family: "Arial, Helvetica, sans-serif";
+    -fx-font-size: 14px;
+    -fx-background-color: #f4f4f9; /* Matches AnchorPane background color */
+}
+
+/* Header Styling */
+.hbox {
+    -fx-background-color: #3949ab;
+    -fx-padding: 15;
+    -fx-alignment: center;
+}
+
+.hbox .label {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+/* TabPane Styling */
+.tab-pane {
+    -fx-background-color: white;
+    -fx-border-color: #c5cae9;
+    -fx-border-width: 2px;
+    -fx-tab-min-width: 512px;
+    -fx-tab-max-width: 513px;
+}
+
+.tab-pane .tab {
+    -fx-font-weight: bold;
+    -fx-text-fill: #3949ab;
+    -fx-background-insets: 0, 1;
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: #63a2ff;
+    -fx-text-fill: white;
+}
+
+/* Label Styling */
+.label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #3949ab;
+}
+
+/* TableView Styling */
+.table-view {
+    -fx-border-color: #c5cae9;
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #3949ab;
+    -fx-text-fill: white;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #1a1a1a;
+    -fx-font-weight: bold;
+}
+
+.table-view .cell {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-text-fill: #333;
+}
+
+.table-view .cell:hover {
+    -fx-background-color: #d7d7d7;
+}
+
+
+.table-view .cell:selected {
+    -fx-background-color: #63a2ff;
+}
+
+/* Button Styling */
+.button {
+    -fx-background-color: #3949ab;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #5c6bc0;
+}
+
+.button:pressed {
+    -fx-background-color: #303f9f;
+}
+
+/* Add Specific Button Colors */
+#addUserButton, #addArticleButton {
+    -fx-background-color: #4caf50;
+}
+
+#addUserButton:hover, #addArticleButton:hover {
+    -fx-background-color: #66bb6a;
+}
+
+#addUserButton:pressed, #addArticleButton:pressed {
+    -fx-background-color: #2e7d32;
+}
+
+#editUserButton, #editArticleButton {
+    -fx-background-color: #ff9800;
+}
+
+#editUserButton:hover, #editArticleButton:hover {
+    -fx-background-color: #ffb74d;
+}
+
+#editUserButton:pressed, #editArticleButton:pressed {
+    -fx-background-color: #e65100;
+}
+
+#deleteUserButton, #deleteArticleButton {
+    -fx-background-color: #f44336;
+}
+
+#deleteUserButton:hover, #deleteArticleButton:hover {
+    -fx-background-color: #ef5350;
+}
+
+#deleteUserButton:pressed, #deleteArticleButton:pressed {
+    -fx-background-color: #b71c1c;
+}
+
+/* HBox Alignment for Buttons */
+.hbox {
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+/* VBox Styling */
+.vbox {
+    -fx-spacing: 15;
+    -fx-alignment: center;
+    -fx-padding: 15;
+}
+
+/* Style for selected rows */
+.table-row-cell:selected {
+    -fx-background-color: #ffcc80; /* Light orange color for the selected row */
+    -fx-text-fill: black; /* Text color for readability */
+}
+
+/* Optional: Style hover effect for rows */
+.table-row-cell:hover {
+    -fx-background-color: #e0e0e0; /* Light gray hover effect */
+}

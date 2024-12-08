@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="650" prefWidth="1025" style="-fx-background-color: #f4f4f9;" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.AdminController">
+    <VBox alignment="CENTER" prefHeight="650" prefWidth="1025" spacing="10">
+        <!-- Header Section -->
+        <HBox alignment="CENTER" style="-fx-background-color: #3949ab; -fx-padding: 10;">
+            <Label style="-fx-font-size: 24px; -fx-text-fill: white; -fx-font-weight: bold;" text="Admin Dashboard" />
+        </HBox>
+
+        <!-- TabPane Section -->
+        <TabPane prefHeight="500" prefWidth="750">
+            <!-- Users Tab -->
+            <Tab closable="false" text="Users">
+                <VBox alignment="TOP_CENTER" spacing="10">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="User Management" />
+                    <TableView fx:id="userTableView">
+                        <columns>
+                            <TableColumn fx:id="userIdColumn" prefWidth="176.0" text="ID" />
+                            <TableColumn fx:id="userNameColumn" prefWidth="267.0" text="Name" />
+                            <TableColumn fx:id="userEmailColumn" prefWidth="579.0" text="Email" />
+
+                        </columns>
+                    </TableView>
+                    <HBox alignment="CENTER" spacing="10">
+                        <Button fx:id="addUserButton" style="-fx-background-color: #4caf50; -fx-text-fill: white;" text="Add User" />
+                        <Button fx:id="editUserButton" style="-fx-background-color: #ff9800; -fx-text-fill: white;" text="Edit User" />
+                        <Button fx:id="deleteUserButton" onAction="#handleDeleteUser" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Delete User" />
+                    </HBox>
+                </VBox>
+            </Tab>
+
+            <!-- Articles Tab -->
+            <Tab closable="false" text="Articles">
+                <VBox alignment="TOP_CENTER" spacing="10">
+                    <Label style="-fx-font-size: 18px; -fx-font-weight: bold;" text="Article Management" />
+                    <TableView fx:id="articleTableView">
+                        <columns>
+                            <TableColumn fx:id="articleIdColumn" prefWidth="70.0" text="ID" />
+                            <TableColumn fx:id="articleTitleColumn" prefWidth="287.0" text="Title" />
+                            <TableColumn fx:id="articleCategoryColumn" prefWidth="193.0" text="Category" />
+                            <TableColumn fx:id="articleAuthorColumn" prefWidth="150" text="Author" />
+                            <TableColumn fx:id="userPreferencesColumn" prefWidth="296.0" text="User Preferences" />
+                        </columns>
+                    </TableView>
+                    <HBox alignment="CENTER" spacing="10">
+                        <Button fx:id="addArticleButton" style="-fx-background-color: #4caf50; -fx-text-fill: white;" text="Add Article" />
+                        <Button fx:id="editArticleButton" style="-fx-background-color: #ff9800; -fx-text-fill: white;" text="Edit Article" />
+                        <Button fx:id="deleteArticleButton" onAction="#handleDeleteArticle" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Delete Article" />
+                    </HBox>
+                </VBox>
+            </Tab>
+        </TabPane>
+    </VBox>
+    <stylesheets>
+        <URL value="@../Styling_Sheets/admin.css" />
+    </stylesheets>
+
+</AnchorPane>
