@@ -26,7 +26,7 @@ public class Personalize {
             keywords.add(article.getCategory());  // Include category as a keyword
 
             keywords.addAll(articleKeywords);
-            System.out.println(keywords);
+            //System.out.println(keywords);
         }
 
         return keywords.stream()
@@ -127,7 +127,7 @@ public class Personalize {
 
         // Fetch user's preferred categories (based on liked or read articles)
         List<String> preferredCategories = fetchPreferredCategories(userId);
-        System.out.println(preferredCategories);
+        //System.out.println(preferredCategories);
 
         // List to store recommended articles
         List<Article> recommendedArticles = new ArrayList<>();
@@ -140,8 +140,8 @@ public class Personalize {
             // Boost score if the article belongs to a preferred category
             if (preferredCategories.contains(article.getCategory())) {
                 similarityScore *= 1.5; // Boost factor for preferred categories
-                System.out.println( article.getTitle() + " - " + article.getCategory()+ " - " + preferredCategories.contains(article.getCategory()));
-                System.out.println(similarityScore);
+                //System.out.println( article.getTitle() + " - " + article.getCategory()+ " - " + preferredCategories.contains(article.getCategory()));
+                //System.out.println(similarityScore);
             }
 
             // Consider the article if it meets a threshold

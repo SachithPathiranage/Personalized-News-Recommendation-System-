@@ -5,7 +5,6 @@ import org.example.OOD.Database_Handler.DatabaseHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UserPreferences {
     private List<Article> likedArticles;
@@ -143,21 +142,21 @@ public class UserPreferences {
                 '}';
     }
 
-    public String getUserPreferences(Article article, String userId) {
-        try {
-            // Fetch preferences from the database
-            Map<String, List<Integer>> preferencesMap = dbHandler.fetchAllUserPreferences(userId);
-
-            // Count likes, dislikes, and reads for the current article
-            int likesCount = preferencesMap.get("liked").contains(article.getId()) ? 1 : 0;
-            int dislikesCount = preferencesMap.get("disliked").contains(article.getId()) ? 1 : 0;
-            int readsCount = preferencesMap.get("read").contains(article.getId()) ? 1 : 0;
-
-            // Format the string: "Likes: X, Dislikes: Y, Reads: Z"
-            return String.format("Likes: %d, Dislikes: %d, Reads: %d", likesCount, dislikesCount, readsCount);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Error loading preferences";
-        }
-    }
+//    public String getUserPreferences(Article article, String userId) {
+//        try {
+//            // Fetch preferences from the database
+//            Map<String, List<Integer>> preferencesMap = dbHandler.fetchAllUserPreferences(userId);
+//
+//            // Count likes, dislikes, and reads for the current article
+//            int likesCount = preferencesMap.get("liked").contains(article.getId()) ? 1 : 0;
+//            int dislikesCount = preferencesMap.get("disliked").contains(article.getId()) ? 1 : 0;
+//            int readsCount = preferencesMap.get("read").contains(article.getId()) ? 1 : 0;
+//
+//            // Format the string: "Likes: X, Dislikes: Y, Reads: Z"
+//            return String.format("Likes: %d, Dislikes: %d, Reads: %d", likesCount, dislikesCount, readsCount);
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            return "Error loading preferences";
+//        }
+//    }
 }

@@ -1,4 +1,4 @@
-#forYouButton{
+#backbutton{
     -fx-background-image: url('../Images/back-button.png');
     -fx-background-size: 30 30;
     -fx-background-repeat: no-repeat;
@@ -10,6 +10,7 @@
 
 /* General styles for the article container */
 .hbox-article {
+    -fx-max-width: 950;
     -fx-padding: 15;
     -fx-background-color: #ffffff;
     -fx-border-color: #dddddd;
@@ -130,7 +131,7 @@
 
 /* General Layout */
 .root {
-    -fx-font-family: "Times New Roman", sans-serif;
+    -fx-font-family: "Arial, Helvetica, sans-serif";
     -fx-background-color: #f4f8fc; /* Light blue background */
 }
 

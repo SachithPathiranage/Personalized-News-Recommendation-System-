@@ -1,9 +1,15 @@
 package org.example.OOD.Controllers;
 
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -11,12 +17,13 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.scene.web.WebView;
+import javafx.stage.Stage;
 import org.example.OOD.Models.Article;
 import org.example.OOD.Models.User;
 import org.example.OOD.Models.UserPreferences;
 import org.example.OOD.Recommendation_Engine.Personalize;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -76,6 +83,8 @@ public class Personalized_Controller {
         for (Article article : articles) {
             HBox newsItem = createPersonalizedNewsItem(article, preferences);
             personalizedListView.getItems().add(newsItem);
+
+            updatePersonalizedUI();
         }
     }
 
@@ -160,6 +169,7 @@ public class Personalized_Controller {
      * Setup actions for Like, Dislike, and Read buttons.
      */
     private void setupButtonActions(Button likeButton, Button dislikeButton, Button readButton, Article article, UserPreferences preferences) {
+
         // Like button action
         likeButton.setOnAction(event -> {
             if (preferences.isLiked(article)) {
@@ -173,6 +183,7 @@ public class Personalized_Controller {
                 dislikeButton.setText("👎 Dislike");
                 dislikeButton.setStyle(""); // Reset dislike button
             }
+
         });
 
         // Dislike button action
@@ -188,6 +199,7 @@ public class Personalized_Controller {
                 likeButton.setText("👍 Like");
                 likeButton.setStyle(""); // Reset like button
             }
+
         });
 
         readButton.setOnAction(event -> {
@@ -196,10 +208,126 @@ public class Personalized_Controller {
             preferences.addReadArticle(article, currentUser.getId());
             readButton.setText("Read Again ✅");
             readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d"); // Update to show article was read
+
         });
 
         readButton.getStyleClass().add("read-button");
         likeButton.getStyleClass().add("like-button");
         dislikeButton.getStyleClass().add("dislike-button");
+    }
+
+    private void updatePersonalizedUI() {
+        if (personalizedListView == null || currentUser == null) {
+            System.out.println("Error: personalizedListView or currentUser is not initialized.");
+            return;
+        }
+
+        UserPreferences preferences = currentUser.getPreferences();
+
+        for (HBox item : personalizedListView.getItems()) {
+            if (item.getChildren().size() < 2) continue;
+
+            VBox buttonContainer = (VBox) item.getChildren().get(1);
+
+            if (buttonContainer.getChildren().size() < 3) continue;
+
+            Button readButton = (Button) buttonContainer.getChildren().get(0);
+            Button likeButton = (Button) buttonContainer.getChildren().get(1);
+            Button dislikeButton = (Button) buttonContainer.getChildren().get(2);
+
+            HBox hBox = (HBox) item.getChildren().get(0);
+            Label titleLabel = (Label) ((VBox) hBox.getChildren().get(1)).getChildren().get(0);
+            String articleTitle = titleLabel.getText();
+
+            // Find the article using the title
+            Article article = findArticleByTitle(articleTitle);
+
+            if (article == null) continue;
+
+            // Update button styles based on preferences
+            if (preferences.getLikedArticles().contains(article)) {
+                likeButton.setText("Unlike");
+                likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125; -fx-border-color: #031452");
+                dislikeButton.setText("👎 Dislike");
+                dislikeButton.setStyle("");
+            } else {
+                likeButton.setText("👍 Like");
+                likeButton.setStyle("");
+            }
+
+            if (preferences.getDislikedArticles().contains(article)) {
+                dislikeButton.setText("Remove Dislike");
+                dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125; -fx-border-color: #500202");
+                likeButton.setText("👍 Like");
+                likeButton.setStyle("");
+            } else {
+                dislikeButton.setText("👎 Dislike");
+                dislikeButton.setStyle("");
+            }
+
+            if (preferences.getReadArticles().contains(article)) {
+                readButton.setText("Read Again ✅");
+                readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d");
+            } else {
+                readButton.setText("📰 Read Article");
+                readButton.setStyle("");
+            }
+        }
+    }
+
+    private Article findArticleByTitle(String title) {
+        // Search in liked articles
+        for (Article article : currentUser.getPreferences().getLikedArticles()) {
+            if (article.getTitle().equals(title)) {
+                return article;
+            }
+        }
+
+        // Search in disliked articles
+        for (Article article : currentUser.getPreferences().getDislikedArticles()) {
+            if (article.getTitle().equals(title)) {
+                return article;
+            }
+        }
+
+        // Search in read articles
+        for (Article article : currentUser.getPreferences().getReadArticles()) {
+            if (article.getTitle().equals(title)) {
+                return article;
+            }
+        }
+        // If not found in any list, return null
+        return null;
+    }
+
+    @FXML
+    public void BackButtonClick(ActionEvent actionEvent) {
+        try {
+            // Load the FXML file for NewsDisplay.fxml
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Design_Files/NewsDisplay.fxml"));
+            Parent root = loader.load();
+
+            // Get the NewsController instance
+            NewsController newsController = loader.getController();
+
+            // Pass the user-specific state to the controller
+            newsController.initializeNews();
+
+            // Create a new stage for the News Display
+            Stage newsStage = new Stage();
+            newsStage.setTitle("News Articles");
+            newsStage.setScene(new Scene(root, 1110, 650));
+            newsStage.setResizable(true);
+            newsStage.show();
+
+            // Close the current window
+            Stage currentStage = (Stage) ((Node) actionEvent.getSource()).getScene().getWindow();
+            currentStage.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR, "Failed to load news feed!");
+            errorAlert.showAndWait();
+        }
     }
 }

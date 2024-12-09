@@ -11,8 +11,13 @@ import org.example.OOD.Recommendation_Engine.Categorization;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class NewsApplication extends Application {
+    public final static ExecutorService executorService = Executors.newFixedThreadPool(10);
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(NewsApplication.class.getResource("/Design_Files/login.fxml"));
@@ -24,11 +29,28 @@ public class NewsApplication extends Application {
 
     @Override
     public void stop() throws Exception {
-        // Cleanup resources if needed
         System.out.println("Application is stopping...");
+
+        // Gracefully shut down the ExecutorService
+        executorService.shutdown();
+        try {
+            if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+                System.out.println("ExecutorService did not terminate in the specified time. Forcing shutdown...");
+                executorService.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            System.out.println("ExecutorService shutdown interrupted. Forcing shutdown...");
+            executorService.shutdownNow();
+            Thread.currentThread().interrupt(); // Restore the interrupted status
+        }
+
+        // Cleanly shut down JavaFX
         Platform.exit();
-        System.exit(0); // Ensure JVM termination
+
+        // Terminate the JVM as a last resort
+        System.exit(0);
     }
+
 
     public static void main(String[] args) {
 //        //Login_SignupController.testConnection();

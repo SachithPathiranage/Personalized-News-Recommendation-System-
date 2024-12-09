@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.example.OOD.Application.NewsApplication;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 import org.example.OOD.Models.Article;
 import org.example.OOD.Models.Category;
@@ -33,10 +34,12 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.OOD.Application.NewsApplication.executorService;
 import static org.example.OOD.Database_Handler.DatabaseHandler.fetchNewsFromDatabase;
 
 public class NewsController {
@@ -71,6 +74,10 @@ public class NewsController {
     private ListView<HBox> travelListView;
 
     private Map<String, ListView<HBox>> categoryMap;
+    private Map<Integer, List<HBox>> articleUIMap = new HashMap<>();
+    public Map<Integer, List<HBox>> getArticleUIMap() {
+        return articleUIMap;
+    }
 
     public void initializeNews() {
         categoryMap = new HashMap<>();
@@ -141,18 +148,6 @@ public class NewsController {
         }
     }
 
-//    // Fetch user preferences and organize them into a map
-//    private Map<String, List<Integer>> fetchUserPreferences(String userId) throws SQLException {
-//        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
-//        Map<String, List<Integer>> preferences = new HashMap<>();
-//
-//        preferences.put("liked", dbHandler.fetchUserPreferences(userId, "liked"));
-//        preferences.put("disliked", dbHandler.fetchUserPreferences(userId, "disliked"));
-//        preferences.put("read", dbHandler.fetchUserPreferences(userId, "read"));
-//
-//        return preferences;
-//    }
-
     // Log user preferences for debugging
     private void logPreferences(Map<String, List<Integer>> preferences) {
         System.out.println("Liked articles: " + preferences.get("liked"));
@@ -212,6 +207,10 @@ public class NewsController {
             if (listView != null) {
                 HBox newsItem = createNewsItem(article);
                 listView.getItems().add(newsItem);
+
+                // Store the UI element in the global map
+                articleUIMap.computeIfAbsent(article.getId(), id -> new ArrayList<>()).add(newsItem);
+
             } else {
                 System.out.println("Error: ListView is not initialized.");
             }
@@ -280,12 +279,12 @@ public class NewsController {
         // Error handler: Log and use fallback image
         loadImageTask.setOnFailed(event -> {
             Throwable exception = loadImageTask.getException();
-            System.out.println("Error loading image for URL: " + article.getImageUrl() + " - " + exception.getMessage());
+            //System.out.println("Error loading image for URL: " + article.getImageUrl() + " - " + exception.getMessage());
             imageView.setImage(new Image(getClass().getResource("/Images/news.jpeg").toExternalForm()));
         });
 
-        // Run the task on a background thread
-        new Thread(loadImageTask).start();
+        // Run the task in the ExecutorService
+        NewsApplication.executorService.submit(loadImageTask);
 
 
         // Text (middle section)
@@ -341,6 +340,7 @@ public class NewsController {
                     dislikeButton.setText("👎 Dislike");
                     dislikeButton.setStyle(""); // Reset dislike button
                 }
+                updateArticleUI(article);
             });
 
             // Dislike button action
@@ -356,6 +356,7 @@ public class NewsController {
                     likeButton.setText("👍 Like");
                     likeButton.setStyle(""); // Reset like button
                 }
+                updateArticleUI(article);
             });
 
             // Read button action
@@ -364,6 +365,8 @@ public class NewsController {
                 preferences.addReadArticle(article, currentUser.getId());
                 readButton.setText("Read Again ✅");
                 readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d"); // Update to show article was read
+
+                updateArticleUI(article);
             });
 
         }
@@ -394,75 +397,55 @@ public class NewsController {
         return cellContainer;
     }
 
-    private void initializeArticleButtons(User currentUser, Article article, Button likeButton, Button dislikeButton, Button readButton) {
-        if (currentUser != null) {
-            UserPreferences preferences = currentUser.getPreferences();
-
-            // Set initial button labels and styles
-            if (preferences.isLiked(article)) {
-                likeButton.setText("Unlike");
-                likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125;");
-            } else {
-                likeButton.setText("👍 Like");
-                likeButton.setStyle("");
-            }
-
-            if (preferences.isDisliked(article)) {
-                dislikeButton.setText("Remove Dislike");
-                dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125;");
-            } else {
-                dislikeButton.setText("👎 Dislike");
-                dislikeButton.setStyle("");
-            }
-
-            if (preferences.isRead(article)) {
-                readButton.setText("Read Again ✅");
-                readButton.setStyle("-fx-background-color: #59ea59;");
-            } else {
-                readButton.setText("📖 Read");
-                readButton.setStyle("");
-            }
-
-            // Like button action
-            likeButton.setOnAction(event -> {
-                if (preferences.isLiked(article)) {
-                    preferences.removeLikedArticle(article, currentUser.getId());
-                    likeButton.setText("👍 Like");
-                    likeButton.setStyle(""); // Reset to no color
-                } else {
-                    preferences.addLikedArticle(article, currentUser.getId());
-                    likeButton.setText("Unlike");
-                    likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125; -fx-border-color: #031452"); // Blue for liked
-                    dislikeButton.setText("👎 Dislike");
-                    dislikeButton.setStyle(""); // Reset dislike button
+    private void updateArticleUI(Article article) {
+        if (articleUIMap.containsKey(article.getId())) {
+            List<HBox> uiElements = articleUIMap.get(article.getId());
+            for (HBox newsItem : uiElements) {
+                // Find the buttons in the newsItem and update their styles/text
+                for (Node node : newsItem.getChildren()) {
+                    if (node instanceof VBox) {
+                        VBox buttonContainer = (VBox) node;
+                        for (Node button : buttonContainer.getChildren()) {
+                            if (button instanceof Button) {
+                                Button btn = (Button) button;
+                                updateButtonState(btn, article);
+                            }
+                        }
+                    }
                 }
-            });
-
-            // Dislike button action
-            dislikeButton.setOnAction(event -> {
-                if (preferences.isDisliked(article)) {
-                    preferences.removeDislikedArticle(article, currentUser.getId());
-                    dislikeButton.setText("👎 Dislike");
-                    dislikeButton.setStyle(""); // Reset to no color
-                } else {
-                    preferences.addDislikedArticle(article, currentUser.getId());
-                    dislikeButton.setText("Remove Dislike");
-                    dislikeButton.setStyle("-fx-background-color: #f44336; -fx-max-width: 125; -fx-border-color: #500202"); // Red for disliked
-                    likeButton.setText("👍 Like");
-                    likeButton.setStyle(""); // Reset like button
-                }
-            });
-
-            // Read button action
-            readButton.setOnAction(event -> {
-                ReadArticleAction(article); // Custom method to perform reading action
-                preferences.addReadArticle(article, currentUser.getId());
-                readButton.setText("Read Again ✅");
-                readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d"); // Update to show article was read
-            });
+            }
         }
     }
 
+    private void updateButtonState(Button button, Article article) {
+        UserPreferences preferences = currentUser.getPreferences();
+
+        if ("👍 Like".equals(button.getText()) || "Unlike".equals(button.getText())) {
+            if (preferences.isLiked(article)) {
+                button.setText("Unlike");
+                button.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125; -fx-border-color: #031452");
+            } else {
+                button.setText("👍 Like");
+                button.setStyle("");
+            }
+        } else if ("👎 Dislike".equals(button.getText()) || "Remove Dislike".equals(button.getText())) {
+            if (preferences.isDisliked(article)) {
+                button.setText("Remove Dislike");
+                button.setStyle("-fx-background-color: #f44336; -fx-max-width: 125; -fx-border-color: #500202");
+            } else {
+                button.setText("👎 Dislike");
+                button.setStyle("");
+            }
+        } else if ("📰 Read Article".equals(button.getText()) || "Read Again ✅".equals(button.getText())) {
+            if (preferences.isRead(article)) {
+                button.setText("Read Again ✅");
+                button.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d");
+            } else {
+                button.setText("📰 Read Article");
+                button.setStyle("");
+            }
+        }
+    }
 
     /**
      * Resolves redirects for the given URL.

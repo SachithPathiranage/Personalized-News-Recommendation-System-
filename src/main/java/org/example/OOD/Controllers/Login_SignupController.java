@@ -62,7 +62,7 @@ public class Login_SignupController {
                 Stage newsStage = new Stage();
                 newsStage.setTitle("News Articles");
                 newsStage.setScene(new Scene(root, 1110, 650));
-                newsStage.setResizable(true);
+                newsStage.setResizable(false);
                 newsStage.show();
 
                 // Close the login window
@@ -185,7 +185,7 @@ public class Login_SignupController {
                 Stage adminStage = new Stage();
                 adminStage.setTitle("Admin Dashboard");
                 adminStage.setScene(new Scene(root, 1025, 650));
-                adminStage.setResizable(true);
+                adminStage.setResizable(false);
                 adminStage.show();
 
                 // Close the admin login window
