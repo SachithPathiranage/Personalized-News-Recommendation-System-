@@ -61,7 +61,7 @@ public class Login_SignupController {
                 // Create a new stage for the News page
                 Stage newsStage = new Stage();
                 newsStage.setTitle("News Articles");
-                newsStage.setScene(new Scene(root, 1110, 650));
+                newsStage.setScene(new Scene(root, 1125, 650));
                 newsStage.setResizable(false);
                 newsStage.show();
 
@@ -127,7 +127,7 @@ public class Login_SignupController {
     }
 
     @FXML
-    private void backToLogin(ActionEvent actionEvent) {
+    void backToLogin(ActionEvent actionEvent) {
         // Implement navigation back to the login page
         try {
             // Load the Login page FXML file
@@ -184,7 +184,7 @@ public class Login_SignupController {
                 // Create a new stage for the Admin dashboard
                 Stage adminStage = new Stage();
                 adminStage.setTitle("Admin Dashboard");
-                adminStage.setScene(new Scene(root, 1025, 650));
+                adminStage.setScene(new Scene(root, 1025, 620));
                 adminStage.setResizable(false);
                 adminStage.show();
 

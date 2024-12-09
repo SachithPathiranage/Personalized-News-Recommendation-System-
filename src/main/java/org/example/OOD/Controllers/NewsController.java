@@ -10,6 +10,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.image.Image;
@@ -75,9 +76,7 @@ public class NewsController {
 
     private Map<String, ListView<HBox>> categoryMap;
     private Map<Integer, List<HBox>> articleUIMap = new HashMap<>();
-    public Map<Integer, List<HBox>> getArticleUIMap() {
-        return articleUIMap;
-    }
+
 
     public void initializeNews() {
         categoryMap = new HashMap<>();
@@ -574,7 +573,6 @@ public class NewsController {
         }
     }
 
-
     public void ForYouButtonClick(ActionEvent actionEvent) {
         try {
             // Load the FXML file
@@ -584,7 +582,7 @@ public class NewsController {
             // Create a new stage for the User Preferences window
             Stage ForYouStage = new Stage();
             ForYouStage.setTitle("For You");
-            ForYouStage.setScene(new Scene(root, 1110, 650));
+            ForYouStage.setScene(new Scene(root, 1150, 650));
             ForYouStage.setResizable(false);
             ForYouStage.show();
 
@@ -593,6 +591,13 @@ public class NewsController {
         } catch (IOException e) {
             e.printStackTrace(); // Log any issues loading the FXML file
         }
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        // Call the method to navigate to the login page
+        Login_SignupController loginSignupController = new Login_SignupController();
+        loginSignupController.backToLogin(event);
     }
 }
 

@@ -3,13 +3,20 @@ package org.example.OOD.Controllers;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 import org.example.OOD.Models.Article;
 import org.example.OOD.Models.User;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -147,6 +154,19 @@ public class AdminController {
         }
     }
 
+    /**
+     * Refreshes the articleTableView with the latest articles from the database.
+     */
+    public void refreshTableView() {
+        // Fetch the latest articles from the database
+        ObservableList<Article> updatedArticles = FXCollections.observableArrayList(DatabaseHandler.fetchNewsFromDatabase());
+
+        // Set the updated articles in the TableView
+        articleTableView.setItems(updatedArticles);
+
+        System.out.println("TableView refreshed successfully.");
+    }
+
     // Helper method to display alerts
     private void showAlert(Alert.AlertType type, String title, String content) {
         Alert alert = new Alert(type);
@@ -154,4 +174,37 @@ public class AdminController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    @FXML
+    public void AddButtonClick(ActionEvent actionEvent) {
+        try {
+            // Load the FXML file
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Design_Files/AddArticle.fxml"));
+            Parent root = loader.load();
+
+            // Get the controller instance of AddArticleController
+            AddArticleController addArticleController = loader.getController();
+
+            // Pass the current AdminController instance to AddArticleController
+            addArticleController.setAdminController(this);
+
+            // Create a new stage for the Add Article window
+            Stage addArticleStage = new Stage();
+            addArticleStage.setTitle("Add Article");
+            addArticleStage.setScene(new Scene(root, 600, 850));
+            addArticleStage.setResizable(false);
+            addArticleStage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace(); // Log any issues loading the FXML file
+        }
+    }
+
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        // Call the method to navigate to the login page
+        Login_SignupController loginSignupController = new Login_SignupController();
+        loginSignupController.backToLogin(event);
+    }
+
 }

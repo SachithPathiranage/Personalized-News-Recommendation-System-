@@ -1,6 +1,7 @@
 package org.example.OOD.Models;
 
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.regex.Pattern;
 
 public class Article {
     private int id;
@@ -133,6 +134,31 @@ public class Article {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    // Validation methods
+    public static boolean isValidURL(String url) {
+        String urlRegex = "^(https?://)?(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}(/\\S*)?$";
+        return url != null && Pattern.matches(urlRegex, url);
+    }
+
+    public static boolean isValidImageURL(String imageUrl) {
+        String imageRegex = "^(https?://)?(www\\.)?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}\\S*(\\.jpg|\\.png|\\.jpeg|\\.gif)$";
+        return imageUrl != null && Pattern.matches(imageRegex, imageUrl);
+    }
+
+    public static boolean isNonEmptyString(String str) {
+        return str != null && !str.trim().isEmpty();
+    }
+
+    public static boolean isValidCategory(String category, String[] validCategories) {
+        if (category == null) return false;
+        for (String validCategory : validCategories) {
+            if (category.equalsIgnoreCase(validCategory)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

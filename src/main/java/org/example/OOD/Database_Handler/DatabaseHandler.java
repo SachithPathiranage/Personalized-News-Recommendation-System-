@@ -10,6 +10,8 @@ import org.example.OOD.Models.Article;
 import org.example.OOD.Models.User;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -271,6 +273,46 @@ public class DatabaseHandler {
 
         return null; // Return null if authentication fails or an exception occurs
     }
+
+    //Method to Save Article
+    public boolean saveArticle(Article article) {
+        String insertQuery = "INSERT INTO news (title, description, content, url, published_at, source_name, author, image_url, category, likes, dislikes, readers) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement statement = connection.prepareStatement(insertQuery)) {
+            // Set parameters from Article object
+            statement.setString(1, article.getTitle());
+            statement.setString(2, article.getDescription());
+            statement.setString(3, article.getContent());
+            statement.setString(4, article.getUrl());
+
+            // Use current date and time for published_at
+            String currentDateTime = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            statement.setString(5, currentDateTime);
+
+            statement.setString(6, article.getSource_name());
+            statement.setString(7, article.getAuthor());
+            statement.setString(8, article.getImageUrl());
+            statement.setString(9, article.getCategory());
+
+            // Likes, dislikes, readers default to 0
+            statement.setInt(10, article.getLikes());
+            statement.setInt(11, article.getDislikes());
+            statement.setInt(12, article.getReaders());
+
+            // Execute query
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Article saved successfully!");
+                //refreshView();
+                return true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     /////////////////////////////////////Methods use for User Preferences Interactions - Like,Dislike & Read/////////////////////////////////////

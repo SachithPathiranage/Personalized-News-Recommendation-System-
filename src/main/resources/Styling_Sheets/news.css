@@ -151,7 +151,7 @@
     -fx-border-color: transparent; /* Default border (invisible) */
     -fx-border-radius: 10; /* Rounded corners */
     -fx-font-size: 16px;
-    -fx-font-family: "Franklin Gothic Medium";
+    -fx-font-family: "Franklin Gothic Medium" , "Arial Rounded MT Bold";
 }
 
 /* Tab Hover Effect */
@@ -194,10 +194,9 @@
     -fx-padding: 10;
     -fx-font-size: 16px;
     -fx-text-fill: #0d47a1;
-    -fx-background-color: transparent;
-    -fx-border-color: transparent;
+    -fx-background-color: linear-gradient(to bottom, #baf5ff, #4ca2ea);
     -fx-transition: background-color 0.3s ease, border-color 0.3s ease, -fx-text-fill 0.3s ease; /* Smooth animation */
-
+    -fx-border-color: #010128;
 }
 
 /* Hover Effect */
@@ -210,7 +209,7 @@
 
 /* Selected Item */
 .list-cell:selected {
-    -fx-background-color: linear-gradient(to right, #2196f3, #eef2f5); /* Blue gradient */
+    -fx-background-color: linear-gradient(to right, #003e6c, #eef2f5); /* Blue gradient */
     -fx-text-fill: #ffffff; /* White text */
     -fx-border-color: #0d47a1; /* Dark blue border */
     -fx-border-width: 2px;
@@ -220,7 +219,7 @@
 
 /* Ensure Hover Does Not Override Selection */
 .list-cell:hover:selected {
-    -fx-background-color: linear-gradient(to right, #8ecfff, #e9f6ff); /* Same as selected */
+    /*-fx-background-color: linear-gradient(to right, #8ecfff, #e9f6ff); !* Same as selected *!*/
     -fx-text-fill: #ffffff;
     -fx-border-color: #0d47a1;
 }
@@ -255,6 +254,16 @@
 }
 #preferencesButton {
     -fx-background-image: url('../Images/user.png');
+    -fx-background-size: 24 24;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-color: transparent;
+    -fx-min-width: 24;
+    -fx-min-height: 24;
+}
+
+#logoutButton{
+    -fx-background-image: url('../Images/logout-sign.jpg');
     -fx-background-size: 24 24;
     -fx-background-repeat: no-repeat;
     -fx-background-position: center;

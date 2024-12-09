@@ -6,19 +6,51 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="455.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.Login_SignupController">
+<AnchorPane prefHeight="438.0" prefWidth="650.0" style="-fx-background-color: #0C1D67;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.Login_SignupController">
+   <ImageView fitHeight="455.0" fitWidth="454.0" layoutX="-57.0" layoutY="-1.0" pickOnBounds="true" preserveRatio="true">
+      <image>
+         <Image url="@../Images/Admin_Image.jpg" />
+      </image>
+   </ImageView>
 
     <BorderPane layoutX="320.0" layoutY="-3.0" prefHeight="455.0" prefWidth="330.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
         <!-- Center Container for the Login Form -->
         <center>
             <StackPane>
-                <VBox alignment="CENTER" prefHeight="425.0" prefWidth="338.0" spacing="15" styleClass="login-container">
+                <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="455.0" prefWidth="330.0" spacing="15" styleClass="login-container">
+               <Label prefHeight="21.0" prefWidth="139.0" text="𝕹𝖊𝖜𝖘𝕾𝖕𝖍𝖊𝖗𝖊">
+                  <font>
+                     <Font name="Tw Cen MT Condensed Extra Bold" size="24.0" />
+                  </font>
+                  <textFill>
+                     <LinearGradient endX="1.0" endY="1.0" startX="1.0">
+                        <stops>
+                           <Stop>
+                              <color>
+                                 <Color red="0.43421053886413574" green="0.13066519796848297" blue="0.13066519796848297" />
+                              </color>
+                           </Stop>
+                           <Stop offset="1.0">
+                              <color>
+                                 <Color red="0.11878655105829239" green="0.10964912176132202" blue="0.6578947305679321" />
+                              </color>
+                           </Stop>
+                        </stops>
+                     </LinearGradient>
+                  </textFill>
+               </Label>
                     <Label styleClass="title-label" text="Admin Login">
                         <VBox.margin>
                             <Insets bottom="20.0" />

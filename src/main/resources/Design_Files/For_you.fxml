@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import java.net.URL?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17.0.2-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.Personalized_Controller">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #025779;" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.Personalized_Controller">
     <!-- Top Bar for Branding or Navigation -->
     <VBox prefHeight="42.0" prefWidth="800.0" spacing="10" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <HBox alignment="TOP_RIGHT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="57.0" prefWidth="800.0" spacing="10" styleClass="top-right-hbox" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <children>
-                <Button fx:id="backbutton" onAction="#BackButtonClick" prefHeight="41.0" prefWidth="61.0">
+                <Button fx:id="backbutton" onAction="#BackButtonClick" prefHeight="41.0" prefWidth="61.0" style="-fx-background-color: white;">
                <HBox.margin>
                   <Insets right="12.0" top="8.0" />
                </HBox.margin></Button>
@@ -21,7 +26,7 @@
     </VBox>
 
     <VBox prefWidth="1030" spacing="10" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="60.0">
-        <ListView fx:id="personalizedListView" prefHeight="530" prefWidth="800">
+        <ListView fx:id="personalizedListView" prefHeight="585" prefWidth="800">
             <!-- Custom List Cell -->
             <items>
                 <!-- Placeholder will be dynamically populated -->
@@ -30,7 +35,7 @@
     </VBox>
 
 
-    <Label alignment="CENTER" layoutX="-1.0" layoutY="-7.0" prefHeight="81.0" prefWidth="321.0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #333; -fx-padding: 10px " text="News Articles for You" />
+    <Label alignment="CENTER" layoutX="-1.0" layoutY="-7.0" prefHeight="81.0" prefWidth="455.0" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #ffffff; -fx-padding: 10px;" text="News Articles just for You! 😊✨" />
     <stylesheets>
         <URL value="@../Styling_Sheets/forYou.css" />
     </stylesheets>
