@@ -1,0 +1,84 @@
+/* General styling for the entire form */
+AnchorPane {
+    -fx-background-color: #f4f7fc; /* Soft background color */
+    -fx-padding: 20px;
+}
+
+/* Styling for the main header */
+Label {
+    -fx-font-family: "Arial";
+    -fx-text-fill: #2e4053; /* Dark blue-gray */
+}
+
+/* Style for all TextFields and ComboBox */
+TextField, TextArea, ComboBox {
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-color: #c5c8ce;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-background-color: #ffffff;
+}
+
+/* Focused input field */
+TextField:focused, TextArea:focused, ComboBox:focused {
+    -fx-border-color: #1abc9c;
+    /*-fx-box-shadow: 0 0 0 2px #1abc9c;*/
+}
+
+/* Button styling */
+Button {
+    -fx-font-family: "Arial";
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-background-color: #1abc9c;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 20px;
+    -fx-background-radius: 20px;
+    -fx-cursor: hand;
+}
+
+/* Hover effect for buttons */
+Button:hover {
+    -fx-background-color: #16a085; /* Slightly darker green */
+}
+
+/* Clear button alternative style */
+Button#clearButton {
+    -fx-background-color: #e74c3c; /* Red */
+}
+
+Button#clearButton:hover {
+    -fx-background-color: #c0392b; /* Darker red */
+}
+
+/* Label next to inputs */
+GridPane Label {
+    -fx-font-size: 14px;
+    -fx-text-fill: #34495e; /* Darker text */
+    -fx-font-weight: bold;
+}
+
+/* Category dropdown styling */
+ComboBox {
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+/* Focused input field */
+TextField:focused, TextArea:focused, ComboBox:focused {
+    -fx-border-color: #1abc9c;
+    -fx-effect: dropshadow(gaussian, #1abc9c, 10, 0.5, 0, 0);
+}
+
+/* GridPane with shadow effect */
+GridPane {
+    -fx-padding: 20px;
+    -fx-background-color: #ffffff;
+    -fx-border-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0.5, 0, 4);
+}
+

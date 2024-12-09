@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.String?>
+<?import java.net.URL?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="700" prefWidth="600" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.OOD.Controllers.AddArticleController">
+    <children>
+        <VBox alignment="TOP_CENTER" layoutX="20" layoutY="20" prefWidth="560" spacing="10">
+            <Label style="-fx-font-size: 20px; -fx-font-weight: bold;" text="Add New Article" />
+
+            <GridPane alignment="TOP_LEFT" hgap="10" minWidth="-Infinity" prefHeight="830.0" prefWidth="560.0" vgap="15">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" prefWidth="100" />
+                    <ColumnConstraints prefWidth="400" />
+                </columnConstraints>
+   
+                <!-- Title -->
+                <Label text="Title:" GridPane.rowIndex="3" />
+                <TextField fx:id="titleField" promptText="Enter article title" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+                <!-- Description -->
+                <Label text="Description:" GridPane.rowIndex="8" />
+                <TextField fx:id="descriptionField" promptText="Enter a short description" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+
+                <!-- Content -->
+                <Label text="Content:" GridPane.rowIndex="14" />
+                <TextArea fx:id="contentArea" minHeight="-Infinity" prefHeight="106.0" prefRowCount="3" prefWidth="400.0" promptText="Enter the main content" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="14" />
+
+                <!-- URL -->
+                <Label text="URL:" GridPane.rowIndex="20" />
+                <TextField fx:id="urlField" promptText="Enter article URL" GridPane.columnIndex="1" GridPane.rowIndex="20" />
+
+                <!-- Published Date (Auto-generated, no input) -->
+                <Label text="Published At:" GridPane.rowIndex="24" />
+                <Label fx:id="publishedAtLabel" style="-fx-font-style: italic;" text="Auto-generated when added" GridPane.columnIndex="1" GridPane.rowIndex="24" />
+
+                <!-- Source Name -->
+                <Label text="Source Name:" GridPane.rowIndex="27" />
+                <TextField fx:id="sourceNameField" promptText="Enter source name" GridPane.columnIndex="1" GridPane.rowIndex="27" />
+
+                <!-- Author -->
+                <Label text="Author:" GridPane.rowIndex="31" />
+                <TextField fx:id="authorField" promptText="Enter author's name" GridPane.columnIndex="1" GridPane.rowIndex="31" />
+
+                <!-- Image URL -->
+                <Label text="Image URL:" GridPane.rowIndex="33" />
+                <TextField fx:id="imageUrlField" promptText="Enter image URL" GridPane.columnIndex="1" GridPane.rowIndex="33" />
+
+                <!-- Category Dropdown -->
+                <Label text="Category:" GridPane.rowIndex="35" />
+                <ComboBox fx:id="categoryDropdown" prefHeight="25.0" prefWidth="406.0" promptText="Select category" GridPane.columnIndex="1" GridPane.rowIndex="35">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Food" />
+                            <String fx:value="Politics" />
+                            <String fx:value="Entertainment" />
+                            <String fx:value="Health" />
+                            <String fx:value="Sports" />
+                            <String fx:value="Tech" />
+                            <String fx:value="Travel" />
+                            <String fx:value="Business" />
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            <Button fx:id="saveButton" onAction="#saveArticle" prefHeight="36.0" prefWidth="80.0" style="-fx-font-size: 14px; -fx-font-weight: bold;" text="Save" GridPane.columnIndex="1" GridPane.rowIndex="39" />
+            <Button fx:id="clearButton" onAction="#clearForm" prefHeight="36.0" prefWidth="84.0" style="-fx-font-size: 14px;" text="Clear" GridPane.columnIndex="1" GridPane.rowIndex="39">
+               <GridPane.margin>
+                  <Insets left="250.0" />
+               </GridPane.margin>
+            </Button>
+            <rowConstraints>
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints maxHeight="0.0" minHeight="0.0" prefHeight="0.0" />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
+            </GridPane>
+        </VBox>
+    </children>
+    <stylesheets>
+        <URL value="@../Styling_Sheets/Add_Article.css" />
+    </stylesheets>
+
+</AnchorPane>
