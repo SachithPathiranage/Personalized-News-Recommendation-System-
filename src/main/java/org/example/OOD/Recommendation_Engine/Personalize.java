@@ -1,5 +1,6 @@
 package org.example.OOD.Recommendation_Engine;
 
+import javafx.scene.control.Alert;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 import org.example.OOD.Models.Article;
 import org.example.OOD.Models.UserPreferences;
@@ -7,6 +8,8 @@ import org.example.OOD.Models.UserPreferences;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.example.OOD.Configurations.Alerts.showAlert;
 
 public class Personalize {
 
@@ -35,6 +38,7 @@ public class Personalize {
                 .collect(Collectors.toList());
     }
 
+    // Helper method to fetch user's preferred articles
     public List<Article> fetchUserPreferredArticles(String userId, String preferenceType) throws SQLException {
         List<Integer> preferredArticleIds = DatabaseHandler.getInstance().fetchUserPreferences(userId, preferenceType);
         List<Article> preferredArticles = new ArrayList<>();
@@ -161,6 +165,7 @@ public class Personalize {
                 .collect(Collectors.toList());
     }
 
+    // Helper method to fetch user's preferred categories
     private List<String> fetchPreferredCategories(String userId) throws SQLException {
         // Fetch all user preferences using the provided method
         Map<String, List<Integer>> preferencesMap = DatabaseHandler.getInstance().fetchAllUserPreferences(userId);
@@ -182,7 +187,7 @@ public class Personalize {
         }
 
         // Debug: Print the preferred categories
-        System.out.println(preferredCategories);
+        //System.out.println(preferredCategories);
 
         // Convert Set to List and return
         return new ArrayList<>(preferredCategories);
@@ -195,12 +200,14 @@ public class Personalize {
         return new HashSet<>(Arrays.asList("the", "and", "is", "in", "to", "of", "a", "on", "for", "with"));
     }
 
+    // 6. Method to fetch and handle recommendations
     public List<Article> fetchAndHandleRecommendations(String userId, int maxArticles) throws SQLException {
         // Fetch the top N recommended articles
         List<Article> recommendations = recommendArticles(userId, maxArticles);
 
         if (recommendations.isEmpty()) {
             System.out.println("No recommendations available.");
+            showAlert(Alert.AlertType.ERROR, "Error", "No recommendations available.");
             throw new SQLException("No recommendations available.");
         }
 

@@ -1,5 +1,6 @@
 package org.example.OOD.Recommendation_Engine;
 
+import javafx.scene.control.Alert;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 import org.example.OOD.Models.Article;
 import org.json.JSONArray;
@@ -10,6 +11,8 @@ import java.net.http.HttpResponse;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.example.OOD.Configurations.Alerts.showAlert;
 
 public class Categorization {
 
@@ -63,6 +66,7 @@ public class Categorization {
 
             return categories;
         } else {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to categorize articles: " + response.body());
             throw new RuntimeException("Failed to categorize articles: " + response.body());
         }
     }

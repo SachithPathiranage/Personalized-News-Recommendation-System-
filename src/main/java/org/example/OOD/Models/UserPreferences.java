@@ -1,5 +1,6 @@
 package org.example.OOD.Models;
 
+import javafx.scene.control.Alert;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 
 import java.sql.SQLException;
@@ -7,17 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.OOD.Configurations.Alerts.showAlert;
+
 public class UserPreferences {
-    private List<Article> likedArticles;
-    private List<Article> dislikedArticles;
-    private List<Article> readArticles;
+    private List<Article> likedArticles = new ArrayList<>();
+    private List<Article> dislikedArticles = new ArrayList<>();
+    private List<Article> readArticles = new ArrayList<>();
+
     private DatabaseHandler dbHandler;
 
     // Constructor
     public UserPreferences() {
-        this.likedArticles = new ArrayList<>();
-        this.dislikedArticles = new ArrayList<>();
-        this.readArticles = new ArrayList<>();
         try {
             dbHandler = DatabaseHandler.getInstance();
         } catch (SQLException e) {
@@ -38,6 +39,16 @@ public class UserPreferences {
         return readArticles;
     }
 
+    public void setLikedArticles(List<Article> likedArticles) {
+        this.likedArticles = new ArrayList<>(likedArticles); // Ensures mutability
+    }
+    public void setDislikedArticles(List<Article> dislikedArticles) {
+        this.dislikedArticles = new ArrayList<>(dislikedArticles); // Ensures mutability
+    }
+    public void setReadArticles(List<Article> readArticles) {
+        this.readArticles = new ArrayList<>(readArticles); // Ensures mutability
+    }
+
     // Methods to update preferences
     public void addLikedArticle(Article article, String userId) {
         try {
@@ -49,6 +60,7 @@ public class UserPreferences {
                 } else {
                     dbHandler.saveUserPreference(userId, article.getId(), "liked");
                     System.out.println("Added to liked articles: " + article.getTitle());
+                    showAlert(Alert.AlertType.INFORMATION,"Liked Article","Added to liked articles: " + article.getTitle());
                     dbHandler.incrementMetric(article.getId(), "likes");
                 }
             }
@@ -67,6 +79,7 @@ public class UserPreferences {
                 } else {
                     dbHandler.saveUserPreference(userId, article.getId(), "disliked");
                     System.out.println("Added to disliked articles: " + article.getTitle());
+                    showAlert(Alert.AlertType.INFORMATION,"Disliked Article","Added to disliked articles: " + article.getTitle());
                     dbHandler.incrementMetric(article.getId(), "dislikes");
                 }
             }
@@ -80,6 +93,7 @@ public class UserPreferences {
             if (likedArticles.remove(article)) {
                 dbHandler.removeUserPreference(userId, article.getId(), "liked");
                 System.out.println("Removed from liked articles: " + article.getTitle());
+                showAlert(Alert.AlertType.INFORMATION,"Removed from liked Article","Removed from liked articles: " + article.getTitle());
                 dbHandler.decrementMetric(article.getId(), "likes");
             }
         } catch (SQLException e) {
@@ -92,6 +106,7 @@ public class UserPreferences {
             if (dislikedArticles.remove(article)) {
                 dbHandler.removeUserPreference(userId, article.getId(), "disliked");
                 System.out.println("Removed from disliked articles: " + article.getTitle());
+                showAlert(Alert.AlertType.INFORMATION,"Removed from disliked Article","Removed from disliked articles: " + article.getTitle());
                 dbHandler.decrementMetric(article.getId(), "dislikes");
             }
         } catch (SQLException e) {
@@ -123,6 +138,7 @@ public class UserPreferences {
                     dbHandler.saveUserPreference(userId, article.getId(), "read");
                     System.out.println("Added to read articles: " + article.getTitle());
                     dbHandler.incrementMetric(article.getId(), "readers");
+                    showAlert(Alert.AlertType.INFORMATION,"Read Article","Added to read articles: " + article.getTitle());
                 }
             }
         } catch (SQLException e) {
@@ -143,7 +159,7 @@ public class UserPreferences {
     @Override
     public String toString() {
         return "UserPreferences{" +
-                "likedArticles=" + likedArticles.stream().map(Article::getTitle).toList() +
+                "likedArticles=" + likedArticles +
                 ", dislikedArticles=" + dislikedArticles +
                 ", readArticles=" + readArticles +
                 '}';

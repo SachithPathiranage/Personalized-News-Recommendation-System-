@@ -8,6 +8,12 @@
     -fx-min-height: 24;
 }
 
+#backbutton:hover{
+    -fx-background-size: 35 35;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
 /* General styles for the article container */
 .hbox-article {
     -fx-max-width: 950;
@@ -187,4 +193,11 @@
     /*-fx-background-color: linear-gradient(to right, #8ecfff, #e9f6ff); !* Same as selected *!*/
     -fx-text-fill: #ffffff;
     -fx-border-color: #0d47a1;
+}
+
+#articleLimitDropdown{
+    -fx-padding: 1 1;
+    -fx-background-color: white;
+    -fx-border-color: #d3d3d3;
+    -fx-border-radius: 5;
 }

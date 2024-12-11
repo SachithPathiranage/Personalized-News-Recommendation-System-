@@ -2,11 +2,10 @@ package org.example.OOD.Controllers;
 
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.HBox;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 import org.example.OOD.Models.Article;
@@ -147,7 +146,7 @@ public class UserLogs_Controller {
     private void handleArticleClick(ListView<HBox> listView) throws SQLException {
         // Get the selected item (HBox) from the ListView
         HBox selectedItem = listView.getSelectionModel().getSelectedItem();
-        System.out.println("Clicked item: " + selectedItem);
+        //System.out.println("Clicked item: " + selectedItem);
 
         if (selectedItem != null) {
             // Extract the article title from the Label inside the HBox

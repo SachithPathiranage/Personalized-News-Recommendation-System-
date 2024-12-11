@@ -4,8 +4,10 @@ import javafx.scene.control.Alert;
 import org.example.OOD.Database_Handler.DatabaseHandler;
 
 import java.sql.SQLException;
-import java.util.UUID;
+import java.util.*;
 import java.util.regex.Pattern;
+
+import static org.example.OOD.Configurations.Alerts.showAlert;
 
 public class User {
     private String id;
@@ -14,7 +16,7 @@ public class User {
     private String email;
     private String password;
     private UserPreferences preferences;
-    static User currentUser; // Static field to store the logged-in user
+    public static User currentUser; // Static field to store the logged-in user
 
     public User(String id, String unique_code, String name, String email, String password) {
         this.id = id;
@@ -77,6 +79,10 @@ public class User {
     public UserPreferences getPreferences() {
         return preferences;
     }
+    public void setPreferences(UserPreferences preferences) {
+        this.preferences = preferences;
+    }
+
     // Static methods to manage the current user
     public static User getCurrentUser() {
         return currentUser;
@@ -118,31 +124,29 @@ public class User {
     public static boolean validateSignup(String email, String password, String confirmPassword) {
         if (!isValidEmail(email)) {
             System.out.println("Invalid email format.");
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Invalid email format!");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Invalid email format!", "Please enter a valid email address.");
             return false;
         }
 
         if (DatabaseHandler.isEmailRegistered(email)) {
             System.out.println("Email is already registered. Please use a different email.");
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Email is already registered. Please use a different email.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Email is already registered!", "Please use a different email.");
             return false;
         }
 
         if (!isValidPassword(password)) {
             System.out.println("Password must be at least 8 characters long.");
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Password must be at least 8 characters long.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Password must be at least 8 characters long!", "Please enter a password with at least 8 characters.");
             return false;
         }
 
         if (!password.equals(confirmPassword)) {
             System.out.println("Passwords do not match.");
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Passwords do not match.");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.ERROR, "Passwords do not match!", "Please enter the same password in both fields.");
             return false;
         }
+        System.out.println("Sign-up successful!");
+        showAlert(Alert.AlertType.INFORMATION, "Sign-up successful!", "Please log in.");
         return true;
     }
 
@@ -156,24 +160,79 @@ public class User {
         return password != null && password.length() >= 8;
     }
 
+    public static void initializeUserPreferences() {
+        try {
+            // Fetch preferences as a map
+            Map<String, List<Integer>> preferencesMap = DatabaseHandler.getInstance().fetchAllUserPreferences(User.getCurrentUser().getId());
 
-    // Methods to interact with articles
-    public void likeArticle(Article article) throws SQLException {
-        User currentUser = User.getCurrentUser();
-        if (currentUser != null && !currentUser.getPreferences().hasArticle(article)) {
-            currentUser.getPreferences().addLikedArticle(article, currentUser.getId());
-        } else {
-            System.out.println("This article is already in your preferences.");
+            // Convert map of article IDs to a map of Article objects
+            UserPreferences preferences = new UserPreferences();
+
+            // Populate liked articles
+            List<Article> likedArticles = preferencesMap.getOrDefault("liked", new ArrayList<>())
+                    .stream()
+                    .map(id -> fetchArticleSafely(id))
+                    .filter(Objects::nonNull) // Remove nulls if fetch fails
+                    .toList();
+            preferences.setLikedArticles(likedArticles);
+
+            // Populate disliked articles
+            List<Article> dislikedArticles = preferencesMap.getOrDefault("disliked", new ArrayList<>())
+                    .stream()
+                    .map(id -> fetchArticleSafely(id))
+                    .filter(Objects::nonNull)
+                    .toList();
+            preferences.setDislikedArticles(dislikedArticles);
+
+            // Populate read articles
+            List<Article> readArticles = preferencesMap.getOrDefault("read", new ArrayList<>())
+                    .stream()
+                    .map(id -> fetchArticleSafely(id))
+                    .filter(Objects::nonNull)
+                    .toList();
+            preferences.setReadArticles(readArticles);
+
+            // Set the preferences in the current user
+            User.getCurrentUser().setPreferences(preferences);
+
+            // Log the updated preferences
+            //System.out.println("Updated User Preferences: " + preferences);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle or log the error for failing to initialize preferences
         }
     }
 
-    public void dislikeArticle(Article article) throws SQLException {
-        User currentUser = User.getCurrentUser();
-        if (currentUser != null && !currentUser.getPreferences().hasArticle(article)) {
-            currentUser.getPreferences().addDislikedArticle(article, currentUser.getId());
-        }
-        else {
-            System.out.println("This article is already in your preferences.");
+    private static Article fetchArticleSafely(int articleId) {
+        try {
+            return DatabaseHandler.getInstance().fetchArticleById(articleId);
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the error
+            return null; // Return null to signify fetch failure
         }
     }
+
+
+
+
+//    // Methods to interact with articles
+//    public void likeArticle(Article article) throws SQLException {
+//        User currentUser = User.getCurrentUser();
+//        if (currentUser != null && !currentUser.getPreferences().hasArticle(article)) {
+//            currentUser.getPreferences().addLikedArticle(article, currentUser.getId());
+//        } else {
+//            System.out.println("This article is already in your preferences.");
+//        }
+//    }
+//
+//    public void dislikeArticle(Article article) throws SQLException {
+//        User currentUser = User.getCurrentUser();
+//        if (currentUser != null && !currentUser.getPreferences().hasArticle(article)) {
+//            currentUser.getPreferences().addDislikedArticle(article, currentUser.getId());
+//        }
+//        else {
+//            System.out.println("This article is already in your preferences.");
+//        }
+//    }
 }

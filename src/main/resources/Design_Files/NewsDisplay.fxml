@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.Integer?>
 <?import java.net.URL?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
@@ -18,12 +21,25 @@
     <VBox prefHeight="42.0" prefWidth="800.0" spacing="10" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <HBox alignment="TOP_RIGHT" minHeight="-Infinity" minWidth="-Infinity" prefHeight="57.0" prefWidth="800.0" spacing="10" styleClass="top-right-hbox" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
             <children>
+                <ComboBox fx:id="articleLimitDropdown" layoutX="20.0" layoutY="20.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="108.0">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <Integer fx:value="10" />
+                            <Integer fx:value="25" />
+                            <Integer fx:value="50" />
+                            <Integer fx:value="100" />
+                        </FXCollections>
+                    </items>
+               <HBox.margin>
+                  <Insets right="15.0" top="5.0" />
+               </HBox.margin>
+                </ComboBox>
                 <Button fx:id="forYouButton" onAction="#ForYouButtonClick" prefHeight="36.0" prefWidth="103.0" text="📰 For You">
                     <font>
-                        <Font name="Times New Roman" size="18.0" />
+                        <Font name="Times New Roman" size="15.0" />
                     </font>
                     <HBox.margin>
-                        <Insets right="50.0" top="12.0" />
+                        <Insets right="15.0" top="12.0" />
                     </HBox.margin>
                 </Button>
 

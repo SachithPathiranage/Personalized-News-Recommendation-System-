@@ -1,5 +1,6 @@
 package org.example.OOD.Controllers;
 
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,10 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
@@ -29,16 +27,28 @@ import java.util.List;
 
 public class Personalized_Controller {
     @FXML
+    private ComboBox<Integer> articleLimitDropdown;
+
+    @FXML
     private ListView<HBox> personalizedListView; // The main ListView for personalized news
 
     private User currentUser; // Current logged-in user
+
+    private static final int DEFAULT_ARTICLE_LIMIT = 5;
 
     /**
      * Initialize the controller.
      */
 
     public void initialize() {
+
+        // Initialize the dropdown
+        articleLimitDropdown.setItems(FXCollections.observableArrayList(5, 10, 20, 30));
+        articleLimitDropdown.setValue(DEFAULT_ARTICLE_LIMIT);
+
+        // Get the current user
         currentUser = User.getCurrentUser();
+        System.out.println(currentUser.getPreferences());
 
         if (currentUser == null) {
             System.out.println("No user is logged in.");
@@ -51,6 +61,9 @@ public class Personalized_Controller {
         Personalize personalize = new Personalize();
 
         try {
+
+            User.initializeUserPreferences();
+
 //            // Fetch the top N recommended articles (e.g., top 5)
 //            List<Article> recommendations = personalize.recommendArticles(currentUser.getId(), 10);
 //
@@ -64,8 +77,26 @@ public class Personalized_Controller {
 //                    System.out.println("- " + article.getTitle() + " (Similarity Score: " + article.getSimilarityScore() + ")");
 //                }
 
+            // Add a listener to detect changes in the dropdown value
+            articleLimitDropdown.setOnAction(event -> {
+                int selectedLimit = articleLimitDropdown.getValue();
+                // Fetch and handle recommendations
+                List<Article> recommendations = null;
+                try {
+                    recommendations = personalize.fetchAndHandleRecommendations(currentUser.getId(), selectedLimit);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // Clear the existing items in the ListView before adding new ones
+                personalizedListView.getItems().clear();
+
+                // Populate the personalized articles in the ListView
+                populatePersonalizedArticles(recommendations, currentUser.getPreferences());
+            });
+
             // Fetch and handle recommendations
-            List<Article> recommendations = personalize.fetchAndHandleRecommendations(currentUser.getId(), 10);
+            List<Article> recommendations = personalize.fetchAndHandleRecommendations(currentUser.getId(), DEFAULT_ARTICLE_LIMIT);
 
             // Populate the personalized articles in the ListView
             populatePersonalizedArticles(recommendations, currentUser.getPreferences());

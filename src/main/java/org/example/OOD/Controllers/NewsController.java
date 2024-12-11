@@ -1,5 +1,6 @@
 package org.example.OOD.Controllers;
 
+import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -33,13 +34,11 @@ import java.net.URI;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import static org.example.OOD.Application.NewsApplication.executorService;
 import static org.example.OOD.Configurations.Alerts.showAlert;
 import static org.example.OOD.Database_Handler.DatabaseHandler.fetchNewsFromDatabase;
+import static org.example.OOD.Models.UserPreferences.logPreferences;
 
 public class NewsController {
     @FXML
@@ -71,19 +70,31 @@ public class NewsController {
 
     @FXML
     private ListView<HBox> travelListView;
-    private static final int DEFAULT_ARTICLE_LIMIT = 25;
+
+    @FXML
+    private ComboBox<Integer> articleLimitDropdown;
+    private static final int DEFAULT_ARTICLE_LIMIT = 10;
     private Map<String, ListView<HBox>> categoryMap;
     private Map<Integer, List<HBox>> articleUIMap = new HashMap<>();
 
 
     public void initializeNews() {
+
+        // Initialize the dropdown
+        articleLimitDropdown.setItems(FXCollections.observableArrayList(10, 25, 50, 100));
+        articleLimitDropdown.setValue(DEFAULT_ARTICLE_LIMIT);
+
         categoryMap = new HashMap<>();
+
+        // Fetch predefined categories
         List<Category> predefinedCategories = Category.getCategories();
+
+        // Add predefined categories to the map
         predefinedCategories.forEach(category -> {
             switch (category.getName()) {
-                case "General":
-                    categoryMap.put(String.valueOf(category), newsListView);
-                    break;
+//                case "General":
+//                    categoryMap.put(String.valueOf(category), newsListView);
+//                    break;
                 case "Tech":
                     categoryMap.put(String.valueOf(category), techListView);
                     break;
@@ -113,61 +124,62 @@ public class NewsController {
 
         this.currentUser = User.getCurrentUser(); // Get the logged-in user
 
-        if (currentUser != null) {
-            System.out.println("Loading news for: " + currentUser.getName() + " with ID: " + currentUser.getId());
+        // Add a listener to detect changes in the dropdown value
+        articleLimitDropdown.setOnAction(event -> {
+            int selectedLimit = articleLimitDropdown.getValue();
+            loadArticles(selectedLimit); // Load articles based on the selected limit
+        });
 
-            // Fetch all articles and user preferences
-            List<Article> articles = fetchNewsFromDatabase();
-            if (articles == null || articles.isEmpty()) {
-                System.out.println("No articles found in the database.");
-                showAlert(Alert.AlertType.ERROR, "Error", "No articles found in the database.");
-                return;
-            }
+        // Initialize the news with the default article limit
+        loadArticles(DEFAULT_ARTICLE_LIMIT);
+    }
 
-            try {
-                // Fetch user preferences in one go
-                Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
-
-                // Log preferences for debugging
-                UserPreferences.logPreferences(userPreferences);
-
-                // Get the user's article limit or use the default
-                int articleLimit = getUserArticleLimit();
-
-                // Shuffle the articles randomly
-                Collections.shuffle(articles);
-
-                // Truncate the shuffled list to the selected limit
-                List<Article> randomArticles = articles.stream()
-                        .limit(articleLimit)
-                        .collect(Collectors.toList());
-                // Populate the ListView with articles and update preferences
-                populateArticles(randomArticles, userPreferences);
-
-                // Populate category-specific news
-                populateCategoryNews();
-
-            } catch (SQLException e) {
-                System.out.println("Error fetching data from the database.");
-                e.printStackTrace();
-            }
-        } else {
+    private void loadArticles(int articleLimit) {
+        if (currentUser == null) {
             System.out.println("No user is logged in.");
+            return;
+        }
+
+        System.out.println("Loading articles for: " + currentUser.getName() + " with ID: " + currentUser.getId());
+
+        // Fetch all articles
+        List<Article> articles = fetchNewsFromDatabase();
+        if (articles == null || articles.isEmpty()) {
+            System.out.println("No articles found in the database.");
+            showAlert(Alert.AlertType.ERROR, "Error", "No articles found in the database.");
+            return;
+        }
+
+        try {
+            // Shuffle the articles randomly
+            Collections.shuffle(articles);
+
+            // Truncate the shuffled list to the selected limit
+            List<Article> randomArticles = articles.stream()
+                    .limit(articleLimit)
+                    .collect(Collectors.toList());
+
+            // Clear the existing items in the ListView before adding new ones
+            newsListView.getItems().clear();
+
+            // Populate the ListView with articles
+            Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
+
+
+            // Log the user's preferences
+            logPreferences(userPreferences);
+
+            // Populate articles for general tab
+            populateArticles(randomArticles, userPreferences);
+
+            // Populate category-specific news
+            populateCategoryNews(randomArticles);
+
+        } catch (SQLException e) {
+            System.out.println("Error fetching data from the database.");
+            e.printStackTrace();
         }
     }
-
-    private int getUserArticleLimit() {
-        // Logic to fetch the user's limit (e.g., from preferences or settings)
-        // For now, return the default limit
-        return DEFAULT_ARTICLE_LIMIT;
-    }
-    
-    // Log user preferences for debugging
-//    private void logPreferences(Map<String, List<Integer>> preferences) {
-//        System.out.println("Liked articles: " + preferences.get("liked"));
-//        System.out.println("Disliked articles: " + preferences.get("disliked"));
-//        System.out.println("Read articles: " + preferences.get("read"));
-//    }
 
     // Populate the ListView with articles and update preferences
 //    private void populateArticles(List<Article> articles, Map<String, List<Integer>> preferences) {
@@ -204,35 +216,8 @@ public class NewsController {
 //    }
 
 
-//    private void processArticles(List<Article> articles, Map<String, List<Integer>> preferences, ListView<HBox> listView) {
-//        for (Article article : articles) {
-//            // Update user preferences
-//            if (preferences.get("liked").contains(article.getId())) {
-//                currentUser.getPreferences().addLikedArticle(article, currentUser.getId());
-//            }
-//            if (preferences.get("disliked").contains(article.getId())) {
-//                currentUser.getPreferences().addDislikedArticle(article, currentUser.getId());
-//            }
-//            if (preferences.get("read").contains(article.getId())) {
-//                currentUser.getPreferences().addReadArticle(article, currentUser.getId());
-//            }
-//
-//            // Create the news item UI element and add it to the ListView
-//            if (listView != null) {
-//                HBox newsItem = createNewsItem(article);
-//                listView.getItems().add(newsItem);
-//
-//                // Store the UI element in the global map
-//                articleUIMap.computeIfAbsent(article.getId(), id -> new ArrayList<>()).add(newsItem);
-//
-//            } else {
-//                System.out.println("Error: ListView is not initialized.");
-//            }
-//        }
-//    }
-
     // Populate the ListView with articles and update preferences
-    private void populateArticles(List<Article> articles, Map<String, List<Integer>> preferences) {
+    private void populateArticles(List<Article> articles, Map<String, List<Integer>> preferences) throws SQLException {
         if (newsListView != null) {
             for (Article article : articles) {
                 // Use the Article class to update preferences
@@ -244,6 +229,7 @@ public class NewsController {
 
                 // Store the UI element in the global map
                 articleUIMap.computeIfAbsent(article.getId(), id -> new ArrayList<>()).add(newsItem);
+
             }
         } else {
             System.out.println("Error: newsListView is not initialized.");
@@ -251,28 +237,30 @@ public class NewsController {
     }
 
     // Populate articles for each category in categoryMap
-    private void populateCategoryNews() {
+    private void populateCategoryNews(List<Article> randomArticles) {
         if (categoryMap != null && !categoryMap.isEmpty()) {
+            // Clear existing items from all category ListViews before populating new ones
+            categoryMap.values().forEach(listView -> listView.getItems().clear());
+
+
+            // Group the randomly selected articles by their categories
+            Map<String, List<Article>> categorizedArticles = randomArticles.stream()
+                    .collect(Collectors.groupingBy(Article::getCategory));
+
             categoryMap.forEach((category, listView) -> {
-                try {
-                    List<Article> articlesByCategory = Article.fetchArticlesByCategory(category);
+                // Get the articles for the current category from the grouped map
+                List<Article> articlesByCategory = categorizedArticles.getOrDefault(category, Collections.emptyList());
 
-                    if (currentUser != null && currentUser.getPreferences() != null) {
-                        Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
-
-                        for (Article article : articlesByCategory) {
-                            Article.updateUserPreferences(userPreferences, currentUser, article);
-
-                            // Add article to ListView
-                            HBox newsItem = createNewsItem(article);
-                            listView.getItems().add(newsItem);
-
-                            articleUIMap.computeIfAbsent(article.getId(), id -> new ArrayList<>()).add(newsItem);
-                        }
+                for (Article article : articlesByCategory) {
+                    // Create the news item UI element and add it to the ListView
+                    HBox newsItem = null;
+                    try {
+                        newsItem = createNewsItem(article);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (SQLException e) {
-                    System.out.println("Error fetching articles for category: " + category);
-                    e.printStackTrace();
+                    listView.getItems().add(newsItem);
+
                 }
             });
         } else {
@@ -281,7 +269,38 @@ public class NewsController {
     }
 
 
-    private HBox createNewsItem(Article article) {
+//    // Populate articles for each category in categoryMap
+//    private void populateCategoryNews() {
+//        if (categoryMap != null && !categoryMap.isEmpty()) {
+//            categoryMap.forEach((category, listView) -> {
+//                try {
+//                    List<Article> articlesByCategory = DatabaseHandler.getInstance().fetchArticlesByCategory(category);
+//
+//                    if (currentUser != null && currentUser.getPreferences() != null) {
+//                        Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
+//
+//                        for (Article article : articlesByCategory) {
+//                            Article.updateUserPreferences(userPreferences, currentUser, article);
+//
+//                            // Add article to ListView
+//                            HBox newsItem = createNewsItem(article);
+//                            listView.getItems().add(newsItem);
+//
+//                            articleUIMap.computeIfAbsent(article.getId(), id -> new ArrayList<>()).add(newsItem);
+//                        }
+//                    }
+//                } catch (SQLException e) {
+//                    System.out.println("Error fetching articles for category: " + category);
+//                    e.printStackTrace();
+//                }
+//            });
+//        } else {
+//            System.out.println("Error: categoryMap is not initialized or is empty.");
+//        }
+//    }
+
+
+    private HBox createNewsItem(Article article) throws SQLException {
         HBox cellContainer = new HBox(10); // The outer container
         cellContainer.setPadding(new Insets(10));
 
@@ -344,7 +363,6 @@ public class NewsController {
         loadImageTask.setOnFailed(event -> {
             Throwable exception = loadImageTask.getException();
             //System.out.println("Error loading image for URL: " + article.getImageUrl() + " - " + exception.getMessage());
-            System.out.println("Error loading image: " + event.getSource().getException());
             imageView.setImage(new Image(getClass().getResource("/Images/news.jpeg").toExternalForm()));
         });
 
@@ -378,7 +396,11 @@ public class NewsController {
         Button dislikeButton = new Button("👎 Dislike");
 
         if (currentUser != null) {
+            User.initializeUserPreferences();
             UserPreferences preferences = currentUser.getPreferences();
+            //System.out.println(preferences);
+            updateArticleUI(article);
+
 
             // Set initial button labels and styles
             if (preferences.isLiked(article)) {

@@ -262,6 +262,19 @@
     -fx-min-height: 24;
 }
 
+#preferencesButton:hover{
+    -fx-background-size: 30 30;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#forYouButton:hover{
+    -fx-background-size: 24 24;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-font-size: 18;
+}
+
 #logoutButton{
     -fx-background-image: url('../Images/logout-sign.jpg');
     -fx-background-size: 24 24;
@@ -270,4 +283,17 @@
     -fx-background-color: transparent;
     -fx-min-width: 24;
     -fx-min-height: 24;
+}
+
+#logoutButton:hover{
+    -fx-background-size: 30 30;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+}
+
+#articleLimitDropdown{
+    -fx-padding: 1 1;
+    -fx-background-color: white;
+    -fx-border-color: #d3d3d3;
+    -fx-border-radius: 5;
 }

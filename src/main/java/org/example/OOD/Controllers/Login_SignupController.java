@@ -15,6 +15,8 @@ import org.example.OOD.Models.Admin;
 import org.example.OOD.Models.User;
 import java.sql.SQLException;
 
+import static org.example.OOD.Configurations.Alerts.showAlert;
+
 
 public class Login_SignupController {
     @FXML
@@ -44,8 +46,7 @@ public class Login_SignupController {
         User currentUser = User.handleLogin(email, password);
 
         if (currentUser != null) {
-            Alert alert = new Alert(AlertType.INFORMATION, "Login successful!");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.INFORMATION, "Login successful!", "Welcome, " + currentUser.getName() + "!");
 
             try {
                 // Load the NewsDisplay.fxml file
@@ -69,12 +70,11 @@ public class Login_SignupController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Alert errorAlert = new Alert(AlertType.ERROR, "Failed to load news articles!");
-                errorAlert.showAndWait();
+                showAlert(AlertType.ERROR,"Error" ,"Failed to load news articles!");
+
             }
         } else {
-            Alert alert = new Alert(AlertType.ERROR, "Invalid email or password!");
-            alert.showAndWait();
+            showAlert(AlertType.ERROR, "Login failed!", "Invalid email or password!");
         }
     }
 
@@ -164,8 +164,7 @@ public class Login_SignupController {
         if (admin != null) {
             String name = admin.getName(); // Retrieve the name from the authenticated Admin object
 
-            Alert alert = new Alert(AlertType.INFORMATION, "Login successful! Welcome, " + name + "!");
-            alert.showAndWait();
+            showAlert(Alert.AlertType.INFORMATION, "Login successful!", "Welcome, " + name + "!");
 
             try {
                 // Load the Admin dashboard or main page (e.g., AdminDashboard.fxml)
@@ -189,12 +188,10 @@ public class Login_SignupController {
 
             } catch (Exception e) {
                 e.printStackTrace();
-                Alert errorAlert = new Alert(AlertType.ERROR, "Failed to load the Admin Dashboard!");
-                errorAlert.showAndWait();
+                showAlert(AlertType.ERROR, "Error", "Failed to load the Admin Dashboard!");
             }
         } else {
-            Alert alert = new Alert(AlertType.ERROR, "Invalid email or password!");
-            alert.showAndWait();
+            showAlert(AlertType.ERROR, "Login failed!", "Invalid email or password!");
         }
     }
 }

@@ -469,6 +469,115 @@ public class DatabaseHandler {
     ///////////////////////////////////////////////////////Methods use for Article Interactions/////////////////////////////////////////////////////
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    //Method to Create News Table
+    public static void createNewsTableIfNotExists() {
+        String createTableQuery = """
+        CREATE TABLE IF NOT EXISTS news (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            title VARCHAR(255) NOT NULL,
+            description TEXT,
+            content TEXT,
+            url VARCHAR(255) UNIQUE NOT NULL,
+            published_at DATETIME,
+            source_name VARCHAR(255),
+            author VARCHAR(255),
+            image_url VARCHAR(255),
+            category VARCHAR(255),
+            likes INT DEFAULT 0,
+            dislikes INT DEFAULT 0,
+            readers INT DEFAULT 0
+        );
+    """;
+
+        try (var connection = DatabaseHandler.getConnection();
+             var statement = connection.createStatement()) {
+            statement.executeUpdate(createTableQuery);
+            System.out.println("News table ensured to exist.");
+        } catch (SQLException e) {
+            System.err.println("Error creating news table: " + e.getMessage());
+        }
+    }
+
+    //Method to Save Article
+    public static void saveArticleToDatabase(String title, String description, String content, String url, String publishedAt,
+                                             String sourceName, String author, String imageUrl) {
+        createNewsTableIfNotExists(); // Ensure table exists before saving the article
+
+        String insertQuery = "INSERT INTO news (title, description, content, url, published_at, source_name, author, image_url) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            // Convert ISO 8601 to MySQL-compatible DATETIME format
+            String formattedPublishedAt = publishedAt.replace("T", " ").replace("Z", "");
+
+            // Check if the article already exists
+            DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+            if (!dbHandler.isArticleExists(url)) {
+                try (var connection = DatabaseHandler.getConnection();
+                     var preparedStatement = connection.prepareStatement(insertQuery)) {
+                    preparedStatement.setString(1, title);
+                    preparedStatement.setString(2, description);
+                    preparedStatement.setString(3, content);
+                    preparedStatement.setString(4, url);
+                    preparedStatement.setString(5, formattedPublishedAt);
+                    preparedStatement.setString(6, sourceName);
+                    preparedStatement.setString(7, author);
+                    preparedStatement.setString(8, imageUrl);
+
+                    preparedStatement.executeUpdate();
+                    System.out.println("Article saved: " + title);
+                }
+            } else {
+                System.out.println("Article already exists in the database: " + title);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error saving article to database: " + e.getMessage());
+        }
+    }
+
+    //Method to Check if Article is Removed
+    public static boolean isRemovedArticle(String title, String description, String content, String url) {
+        return "[Removed]".equalsIgnoreCase(title) ||
+                "[Removed]".equalsIgnoreCase(description) ||
+                "[Removed]".equalsIgnoreCase(content) ||
+                "https://removed.com".equalsIgnoreCase(url);
+    }
+
+    //Method to Adjust IDs
+    public static void adjustIDs() {
+        String fetchQuery = "SELECT id FROM news ORDER BY id ASC";
+        String updateQuery = "UPDATE news SET id = ? WHERE id = ?";
+
+        try (Connection connection = getConnection();
+             Statement fetchStatement = connection.createStatement();
+             ResultSet resultSet = fetchStatement.executeQuery(fetchQuery);
+             PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+
+            int newId = 1;
+            while (resultSet.next()) {
+                int oldId = resultSet.getInt("id");
+
+                // Update ID only if it's different
+                if (oldId != newId) {
+                    updateStatement.setInt(1, newId);
+                    updateStatement.setInt(2, oldId);
+                    updateStatement.executeUpdate();
+                }
+
+                newId++;
+            }
+
+            // Reset the auto-increment value
+            try (Statement resetAutoIncrement = connection.createStatement()) {
+                resetAutoIncrement.execute("ALTER TABLE news AUTO_INCREMENT = " + newId);
+            }
+
+            System.out.println("IDs adjusted successfully.");
+        } catch (Exception e) {
+            System.err.println("Error while adjusting IDs: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     //Method to Check if Article Exists
     public boolean isArticleExists(String url) throws SQLException {

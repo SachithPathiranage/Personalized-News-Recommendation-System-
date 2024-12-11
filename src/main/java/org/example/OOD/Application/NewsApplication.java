@@ -57,7 +57,15 @@ public class NewsApplication extends Application {
 //        NewsAPIHandler newsAPIHandler = new NewsAPIHandler();
 //
 //        // List of categories to fetch
-//        String[] categories = {"business", "technology", "sports", "health", "science", "entertainment"};
+//        String[] categories = {"General",
+//                "Tech",
+//                "Entertainment",
+//                "Business",
+//                "Sports",
+//                "Politics",
+//                "Travel",
+//                "Food",
+//                "Health"};
 //
 //        for (String category : categories) {
 //            newsAPIHandler.fetchAndSaveNewsArticles(category);
