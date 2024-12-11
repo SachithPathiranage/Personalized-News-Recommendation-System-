@@ -112,7 +112,31 @@ public class UserLogs_Controller {
             // Create a "Remove" button
             Button removeButton = new Button("Remove");
             removeButton.getStyleClass().add("remove-button");
-            removeButton.setOnAction(event -> removePreference(matchingArticle, preferenceType, listView));
+
+            // Bind the appropriate removal action
+            removeButton.setOnAction(event -> {
+                switch (preferenceType.toLowerCase()) {
+                    case "liked":
+                        removePreference(matchingArticle, "liked", listView);
+                        UserPreferences.removeLikedArticle(matchingArticle, User.getCurrentUser().getId());
+                        break;
+                    case "disliked":
+                        removePreference(matchingArticle, "disliked", listView);
+                        UserPreferences.removeDislikedArticle(matchingArticle, User.getCurrentUser().getId());
+                        break;
+                    case "read":
+                        removePreference(matchingArticle, "read", listView);
+                        break;
+                    default:
+                        System.err.println("Unknown preference type: " + preferenceType);
+                }
+
+                // Remove the HBox from the ListView
+                listView.getItems().removeIf(item -> {
+                    Label itemLabel = (Label) item.getChildren().get(0);
+                    return itemLabel.getText().contains(matchingArticle.getTitle());
+                });
+            });
 
             // Add both the label and button to an HBox
             HBox articleRow = new HBox(10, articleLabel, removeButton);
@@ -181,7 +205,6 @@ public class UserLogs_Controller {
                 return article; // Return the article if title matches
             }
         }
-
         // Return null if no matching article was found
         return null;
     }
@@ -224,7 +247,6 @@ public class UserLogs_Controller {
                 return articleLabel.getText().contains(article.getTitle());
             });
 
-            showAlert(Alert.AlertType.INFORMATION,"Preference Removed", "The article preference has been successfully removed.");
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR,"Error Removing Preference", e.getMessage());
             e.printStackTrace();

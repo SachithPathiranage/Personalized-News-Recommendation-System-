@@ -92,9 +92,6 @@ public class NewsController {
         // Add predefined categories to the map
         predefinedCategories.forEach(category -> {
             switch (category.getName()) {
-//                case "General":
-//                    categoryMap.put(String.valueOf(category), newsListView);
-//                    break;
                 case "Tech":
                     categoryMap.put(String.valueOf(category), techListView);
                     break;
@@ -134,6 +131,7 @@ public class NewsController {
         loadArticles(DEFAULT_ARTICLE_LIMIT);
     }
 
+    // Load articles based on the selected limit
     private void loadArticles(int articleLimit) {
         if (currentUser == null) {
             System.out.println("No user is logged in.");
@@ -180,40 +178,6 @@ public class NewsController {
             e.printStackTrace();
         }
     }
-
-    // Populate the ListView with articles and update preferences
-//    private void populateArticles(List<Article> articles, Map<String, List<Integer>> preferences) {
-//        if (newsListView != null) {
-//            processArticles(articles, preferences, newsListView);
-//        } else {
-//            System.out.println("Error: newsListView is not initialized.");
-//        }
-//    }
-
-    // Populate articles for each category in categoryMap
-//    private void populateCategoryNews() {
-//        if (categoryMap != null && !categoryMap.isEmpty()) {
-//            categoryMap.forEach((category, listView) -> {
-//                try {
-//                    // Fetch articles for the category
-//                    List<Article> articlesByCategory = DatabaseHandler.getInstance().fetchArticlesByCategory(category);
-//
-//                    if (currentUser != null && currentUser.getPreferences() != null) {
-//                        // Fetch user preferences from the database
-//                        Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
-//
-//                        // Use the helper method to process articles
-//                        processArticles(articlesByCategory, userPreferences, listView);
-//                    }
-//                } catch (SQLException e) {
-//                    System.out.println("Error fetching articles for category: " + category);
-//                    e.printStackTrace();
-//                }
-//            });
-//        } else {
-//            System.out.println("Error: categoryMap is not initialized or is empty.");
-//        }
-//    }
 
 
     // Populate the ListView with articles and update preferences
@@ -268,38 +232,7 @@ public class NewsController {
         }
     }
 
-
-//    // Populate articles for each category in categoryMap
-//    private void populateCategoryNews() {
-//        if (categoryMap != null && !categoryMap.isEmpty()) {
-//            categoryMap.forEach((category, listView) -> {
-//                try {
-//                    List<Article> articlesByCategory = DatabaseHandler.getInstance().fetchArticlesByCategory(category);
-//
-//                    if (currentUser != null && currentUser.getPreferences() != null) {
-//                        Map<String, List<Integer>> userPreferences = DatabaseHandler.getInstance().fetchAllUserPreferences(currentUser.getId());
-//
-//                        for (Article article : articlesByCategory) {
-//                            Article.updateUserPreferences(userPreferences, currentUser, article);
-//
-//                            // Add article to ListView
-//                            HBox newsItem = createNewsItem(article);
-//                            listView.getItems().add(newsItem);
-//
-//                            articleUIMap.computeIfAbsent(article.getId(), id -> new ArrayList<>()).add(newsItem);
-//                        }
-//                    }
-//                } catch (SQLException e) {
-//                    System.out.println("Error fetching articles for category: " + category);
-//                    e.printStackTrace();
-//                }
-//            });
-//        } else {
-//            System.out.println("Error: categoryMap is not initialized or is empty.");
-//        }
-//    }
-
-
+    // Create a news item UI element
     private HBox createNewsItem(Article article) throws SQLException {
         HBox cellContainer = new HBox(10); // The outer container
         cellContainer.setPadding(new Insets(10));
@@ -406,7 +339,8 @@ public class NewsController {
             if (preferences.isLiked(article)) {
                 likeButton.setText("Unlike");
                 likeButton.setStyle("-fx-background-color: #2196f3; -fx-max-width: 125;");
-            } else if (preferences.isDisliked(article)) {
+            }
+            else if (preferences.isDisliked(article)) {
                 dislikeButton.setText("Remove Dislike");
                 dislikeButton.setStyle("-fx-background-color: #f44336;-fx-max-width: 125;");
             }
@@ -428,7 +362,6 @@ public class NewsController {
                     dislikeButton.setText("👎 Dislike");
                     dislikeButton.setStyle(""); // Reset dislike button
                 }
-                updateArticleUI(article);
             });
 
             // Dislike button action
@@ -444,7 +377,6 @@ public class NewsController {
                     likeButton.setText("👍 Like");
                     likeButton.setStyle(""); // Reset like button
                 }
-                updateArticleUI(article);
             });
 
             // Read button action
@@ -454,11 +386,10 @@ public class NewsController {
                 readButton.setText("Read Again ✅");
                 readButton.setStyle("-fx-background-color: #59ea59; -fx-max-width: 125; -fx-border-color: #02460d"); // Update to show article was read
 
-                updateArticleUI(article);
             });
 
         }
-
+        // Set button styles
         readButton.getStyleClass().add("read-button");
         likeButton.getStyleClass().add("like-button");
         dislikeButton.getStyleClass().add("dislike-button");
@@ -485,6 +416,7 @@ public class NewsController {
         return cellContainer;
     }
 
+    // Update the UI based on user preferences
     private void updateArticleUI(Article article) {
         if (articleUIMap.containsKey(article.getId())) {
             List<HBox> uiElements = articleUIMap.get(article.getId());
@@ -505,6 +437,7 @@ public class NewsController {
         }
     }
 
+    // Update the button state based on user preferences
     private void updateButtonState(Button button, Article article) {
         UserPreferences preferences = currentUser.getPreferences();
 

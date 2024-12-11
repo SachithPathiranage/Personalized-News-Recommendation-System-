@@ -350,7 +350,6 @@ public class DatabaseHandler {
         }
     }
 
-
     //Method to Save Preferences
     public void saveUserPreference(String userId, int articleId, String preferenceType) throws SQLException {
         String query = "INSERT INTO user_preferences (user_id, article_id, preference_type) VALUES (?, ?, ?)";

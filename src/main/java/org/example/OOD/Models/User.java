@@ -212,27 +212,4 @@ public class User {
             return null; // Return null to signify fetch failure
         }
     }
-
-
-
-
-//    // Methods to interact with articles
-//    public void likeArticle(Article article) throws SQLException {
-//        User currentUser = User.getCurrentUser();
-//        if (currentUser != null && !currentUser.getPreferences().hasArticle(article)) {
-//            currentUser.getPreferences().addLikedArticle(article, currentUser.getId());
-//        } else {
-//            System.out.println("This article is already in your preferences.");
-//        }
-//    }
-//
-//    public void dislikeArticle(Article article) throws SQLException {
-//        User currentUser = User.getCurrentUser();
-//        if (currentUser != null && !currentUser.getPreferences().hasArticle(article)) {
-//            currentUser.getPreferences().addDislikedArticle(article, currentUser.getId());
-//        }
-//        else {
-//            System.out.println("This article is already in your preferences.");
-//        }
-//    }
 }

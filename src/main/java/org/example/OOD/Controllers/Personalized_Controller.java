@@ -61,21 +61,8 @@ public class Personalized_Controller {
         Personalize personalize = new Personalize();
 
         try {
-
+            // Initialize user preferences
             User.initializeUserPreferences();
-
-//            // Fetch the top N recommended articles (e.g., top 5)
-//            List<Article> recommendations = personalize.recommendArticles(currentUser.getId(), 10);
-//
-//            if (recommendations.isEmpty()) {
-//                System.out.println("No recommendations available.");
-//                showAlert(Alert.AlertType.ERROR, "Error", "No recommendations available.");
-//            } else {
-//                // Display the recommended articles (or process further as needed)
-//                System.out.println("Top recommendations:");
-//                for (Article article : recommendations) {
-//                    System.out.println("- " + article.getTitle() + " (Similarity Score: " + article.getSimilarityScore() + ")");
-//                }
 
             // Add a listener to detect changes in the dropdown value
             articleLimitDropdown.setOnAction(event -> {
@@ -252,6 +239,9 @@ public class Personalized_Controller {
         dislikeButton.getStyleClass().add("dislike-button");
     }
 
+    /**
+     * Update the UI based on the current user's preferences.
+     */
     private void updatePersonalizedUI() {
         if (personalizedListView == null || currentUser == null) {
             System.out.println("Error: personalizedListView or currentUser is not initialized.");
@@ -310,31 +300,6 @@ public class Personalized_Controller {
             }
         }
     }
-
-//    private Article findArticleByTitle(String title) {
-//        // Search in liked articles
-//        for (Article article : currentUser.getPreferences().getLikedArticles()) {
-//            if (article.getTitle().equals(title)) {
-//                return article;
-//            }
-//        }
-//
-//        // Search in disliked articles
-//        for (Article article : currentUser.getPreferences().getDislikedArticles()) {
-//            if (article.getTitle().equals(title)) {
-//                return article;
-//            }
-//        }
-//
-//        // Search in read articles
-//        for (Article article : currentUser.getPreferences().getReadArticles()) {
-//            if (article.getTitle().equals(title)) {
-//                return article;
-//            }
-//        }
-//        // If not found in any list, return null
-//        return null;
-//    }
 
     @FXML
     public void BackButtonClick(ActionEvent actionEvent) {

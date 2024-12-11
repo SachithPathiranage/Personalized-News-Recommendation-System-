@@ -29,7 +29,7 @@ public class Article {
     private double similarityScore;
 
 
-    // Constructor
+    // Constructors
     public Article(int id, String title, String description, String sourceName, String publishedDate, String imageUrl, String category) {
         this.id = id;
         this.title = title;

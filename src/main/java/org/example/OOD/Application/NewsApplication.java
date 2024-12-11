@@ -53,23 +53,23 @@ public class NewsApplication extends Application {
 
 
     public static void main(String[] args) {
-//        //Login_SignupController.testConnection();
-//        NewsAPIHandler newsAPIHandler = new NewsAPIHandler();
-//
-//        // List of categories to fetch
-//        String[] categories = {"General",
-//                "Tech",
-//                "Entertainment",
-//                "Business",
-//                "Sports",
-//                "Politics",
-//                "Travel",
-//                "Food",
-//                "Health"};
-//
-//        for (String category : categories) {
-//            newsAPIHandler.fetchAndSaveNewsArticles(category);
-//        }
+        //Login_SignupController.testConnection();
+        NewsAPIHandler newsAPIHandler = new NewsAPIHandler();
+
+        // List of categories to fetch
+        String[] categories = {"General",
+                "Tech",
+                "Entertainment",
+                "Business",
+                "Sports",
+                "Politics",
+                "Travel",
+                "Food",
+                "Health"};
+
+        for (String category : categories) {
+            newsAPIHandler.fetchAndSaveNewsArticles(category);
+        }
         try {
             // Step 1: Get the database handler instance
             DatabaseHandler dbHandler = DatabaseHandler.getInstance();

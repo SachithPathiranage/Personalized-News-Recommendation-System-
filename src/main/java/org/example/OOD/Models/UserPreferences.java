@@ -11,11 +11,11 @@ import java.util.Map;
 import static org.example.OOD.Configurations.Alerts.showAlert;
 
 public class UserPreferences {
-    private List<Article> likedArticles = new ArrayList<>();
-    private List<Article> dislikedArticles = new ArrayList<>();
+    private static List<Article> likedArticles = new ArrayList<>();
+    private static List<Article> dislikedArticles = new ArrayList<>();
     private List<Article> readArticles = new ArrayList<>();
 
-    private DatabaseHandler dbHandler;
+    private static DatabaseHandler dbHandler;
 
     // Constructor
     public UserPreferences() {
@@ -52,7 +52,13 @@ public class UserPreferences {
     // Methods to update preferences
     public void addLikedArticle(Article article, String userId) {
         try {
-            // Add to liked if not already liked
+            // Remove from dislikedArticles if it exists there
+            if (dislikedArticles.contains(article)) {
+                removeDislikedArticle(article, userId);
+                System.out.println("Removed from disliked articles to like the article.");
+            }
+
+            // Add to likedArticles if not already liked
             if (!likedArticles.contains(article)) {
                 likedArticles.add(article);
                 if (dbHandler.isPreferenceRecorded(userId, article.getId(), "liked")) {
@@ -60,7 +66,7 @@ public class UserPreferences {
                 } else {
                     dbHandler.saveUserPreference(userId, article.getId(), "liked");
                     System.out.println("Added to liked articles: " + article.getTitle());
-                    showAlert(Alert.AlertType.INFORMATION,"Liked Article","Added to liked articles: " + article.getTitle());
+                    showAlert(Alert.AlertType.INFORMATION, "Liked Article", "Added to liked articles: " + article.getTitle());
                     dbHandler.incrementMetric(article.getId(), "likes");
                 }
             }
@@ -71,7 +77,13 @@ public class UserPreferences {
 
     public void addDislikedArticle(Article article, String userId) {
         try {
-            // Add to disliked if not already disliked
+            // Remove from likedArticles if it exists there
+            if (likedArticles.contains(article)) {
+                removeLikedArticle(article, userId);
+                System.out.println("Removed from liked articles to dislike the article.");
+            }
+
+            // Add to dislikedArticles if not already disliked
             if (!dislikedArticles.contains(article)) {
                 dislikedArticles.add(article);
                 if (dbHandler.isPreferenceRecorded(userId, article.getId(), "disliked")) {
@@ -79,7 +91,7 @@ public class UserPreferences {
                 } else {
                     dbHandler.saveUserPreference(userId, article.getId(), "disliked");
                     System.out.println("Added to disliked articles: " + article.getTitle());
-                    showAlert(Alert.AlertType.INFORMATION,"Disliked Article","Added to disliked articles: " + article.getTitle());
+                    showAlert(Alert.AlertType.INFORMATION, "Disliked Article", "Added to disliked articles: " + article.getTitle());
                     dbHandler.incrementMetric(article.getId(), "dislikes");
                 }
             }
@@ -88,7 +100,7 @@ public class UserPreferences {
         }
     }
 
-    public void removeLikedArticle(Article article, String userId) {
+    public static void removeLikedArticle(Article article, String userId) {
         try {
             if (likedArticles.remove(article)) {
                 dbHandler.removeUserPreference(userId, article.getId(), "liked");
@@ -101,7 +113,7 @@ public class UserPreferences {
         }
     }
 
-    public void removeDislikedArticle(Article article, String userId) {
+    public static void removeDislikedArticle(Article article, String userId) {
         try {
             if (dislikedArticles.remove(article)) {
                 dbHandler.removeUserPreference(userId, article.getId(), "disliked");
@@ -164,22 +176,4 @@ public class UserPreferences {
                 ", readArticles=" + readArticles +
                 '}';
     }
-
-//    public String getUserPreferences(Article article, String userId) {
-//        try {
-//            // Fetch preferences from the database
-//            Map<String, List<Integer>> preferencesMap = dbHandler.fetchAllUserPreferences(userId);
-//
-//            // Count likes, dislikes, and reads for the current article
-//            int likesCount = preferencesMap.get("liked").contains(article.getId()) ? 1 : 0;
-//            int dislikesCount = preferencesMap.get("disliked").contains(article.getId()) ? 1 : 0;
-//            int readsCount = preferencesMap.get("read").contains(article.getId()) ? 1 : 0;
-//
-//            // Format the string: "Likes: X, Dislikes: Y, Reads: Z"
-//            return String.format("Likes: %d, Dislikes: %d, Reads: %d", likesCount, dislikesCount, readsCount);
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//            return "Error loading preferences";
-//        }
-//    }
 }
