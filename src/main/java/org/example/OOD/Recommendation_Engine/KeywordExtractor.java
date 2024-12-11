@@ -125,6 +125,9 @@ public class KeywordExtractor {
 
     // Example usage
     public static void main(String[] args) {
+//        String classPath = System.getProperty("java.class.path");
+//        System.out.println("Classpath: " + classPath);
+
         KeywordExtractor extractor = new KeywordExtractor();
 
         // Example article text

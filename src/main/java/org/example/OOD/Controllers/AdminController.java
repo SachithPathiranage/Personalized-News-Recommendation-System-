@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import static org.example.OOD.Configurations.Alerts.showAlert;
+
 public class AdminController {
     public TableView userTableView;
     public TableColumn userIdColumn;
@@ -165,14 +167,6 @@ public class AdminController {
         articleTableView.setItems(updatedArticles);
 
         System.out.println("TableView refreshed successfully.");
-    }
-
-    // Helper method to display alerts
-    private void showAlert(Alert.AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setContentText(content);
-        alert.showAndWait();
     }
 
     @FXML

@@ -1,7 +1,13 @@
 package org.example.OOD.Models;
 
-import java.util.concurrent.atomic.AtomicInteger;
+import org.example.OOD.Database_Handler.DatabaseHandler;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
+
+import static org.example.OOD.Models.User.currentUser;
 
 public class Article {
     private int id;
@@ -161,12 +167,62 @@ public class Article {
         return false;
     }
 
+    // Fetch all articles
+//    public static List<Article> fetchAllArticles() throws SQLException {
+//        // Implement database query logic to fetch all articles
+//        return DatabaseHandler.getInstance().fetchNewsFromDatabase();
+//    }
+
+    // Fetch articles by category
+    public static List<Article> fetchArticlesByCategory(String category) throws SQLException {
+        // Implement database query logic to fetch articles for a specific category
+        return DatabaseHandler.getInstance().fetchArticlesByCategory(category);
+    }
+
+    // Update preferences for an article
+    public static void updateUserPreferences(Map<String, List<Integer>> preferences, User user, Article article) {
+        if (preferences.get("liked").contains(article.getId())) {
+            user.getPreferences().addLikedArticle(article, user.getId());
+        }
+        if (preferences.get("disliked").contains(article.getId())) {
+            user.getPreferences().addDislikedArticle(article, user.getId());
+        }
+        if (preferences.get("read").contains(article.getId())) {
+            user.getPreferences().addReadArticle(article, user.getId());
+        }
+    }
+
+    public static Article findArticleByTitle(String title) {
+        // Search in liked articles
+        for (Article article : currentUser.getPreferences().getLikedArticles()) {
+            if (article.getTitle().equals(title)) {
+                return article;
+            }
+        }
+
+        // Search in disliked articles
+        for (Article article : currentUser.getPreferences().getDislikedArticles()) {
+            if (article.getTitle().equals(title)) {
+                return article;
+            }
+        }
+
+        // Search in read articles
+        for (Article article : currentUser.getPreferences().getReadArticles()) {
+            if (article.getTitle().equals(title)) {
+                return article;
+            }
+        }
+        // If not found in any list, return null
+        return null;
+    }
+
     @Override
     public String toString() {
         return "Article{" +
                 "id=" + id +
                 ", title='" + title + '\'' +
-                ", description='" + description;
+                ", description='" + description + "}";
     }
 }
 

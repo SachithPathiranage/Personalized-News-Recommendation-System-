@@ -14,7 +14,7 @@ public class User {
     private String email;
     private String password;
     private UserPreferences preferences;
-    private static User currentUser; // Static field to store the logged-in user
+    static User currentUser; // Static field to store the logged-in user
 
     public User(String id, String unique_code, String name, String email, String password) {
         this.id = id;

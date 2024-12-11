@@ -484,26 +484,26 @@ public class DatabaseHandler {
         return false;
     }
 
-    // Fetch articles from the database
-    public List<Article> fetchArticles() throws SQLException {
-        List<Article> articles = new ArrayList<>();
-        String query = "SELECT id, title, description, url FROM news";
-
-        try (Connection connection = DatabaseHandler.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
-                String url = resultSet.getString("url");
-
-                articles.add(new Article(id, title, description,url));
-            }
-        }
-        return articles;
-    }
+//    // Fetch articles from the database
+//    public List<Article> fetchArticles() throws SQLException {
+//        List<Article> articles = new ArrayList<>();
+//        String query = "SELECT id, title, description, url FROM news";
+//
+//        try (Connection connection = DatabaseHandler.getInstance().getConnection();
+//             PreparedStatement statement = connection.prepareStatement(query);
+//             ResultSet resultSet = statement.executeQuery()) {
+//
+//            while (resultSet.next()) {
+//                int id = resultSet.getInt("id");
+//                String title = resultSet.getString("title");
+//                String description = resultSet.getString("description");
+//                String url = resultSet.getString("url");
+//
+//                articles.add(new Article(id, title, description,url));
+//            }
+//        }
+//        return articles;
+//    }
 
     //Method to Fetch News From Database
     public static List<Article> fetchNewsFromDatabase() {

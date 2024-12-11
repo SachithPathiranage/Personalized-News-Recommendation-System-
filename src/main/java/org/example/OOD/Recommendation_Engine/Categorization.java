@@ -70,7 +70,7 @@ public class Categorization {
     // New method for categorizing articles and updating the database
     public void categorizeAndUpdateArticles(DatabaseHandler dbHandler) throws Exception {
         // Step 1: Fetch articles from the database
-        List<Article> articles = dbHandler.fetchArticles();
+        List<Article> articles = DatabaseHandler.fetchNewsFromDatabase();
 
         if (articles.isEmpty()) {
             System.out.println("No articles found in the database.");

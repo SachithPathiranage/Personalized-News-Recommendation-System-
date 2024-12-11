@@ -5,6 +5,7 @@ import org.example.OOD.Database_Handler.DatabaseHandler;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class UserPreferences {
     private List<Article> likedArticles;
@@ -127,6 +128,12 @@ public class UserPreferences {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void logPreferences(Map<String, List<Integer>> preferences) {
+        System.out.println("Liked articles: " + preferences.get("liked"));
+        System.out.println("Disliked articles: " + preferences.get("disliked"));
+        System.out.println("Read articles: " + preferences.get("read"));
     }
 
     public boolean isRead(Article article) {

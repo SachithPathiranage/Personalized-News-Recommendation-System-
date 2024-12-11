@@ -2,6 +2,7 @@ package org.example.OOD.Recommendation_Engine;
 
 import org.example.OOD.Database_Handler.DatabaseHandler;
 import org.example.OOD.Models.Article;
+import org.example.OOD.Models.UserPreferences;
 
 import java.sql.SQLException;
 import java.util.*;
@@ -192,5 +193,23 @@ public class Personalize {
     private Set<String> getStopwords() {
         // Example stopwords set
         return new HashSet<>(Arrays.asList("the", "and", "is", "in", "to", "of", "a", "on", "for", "with"));
+    }
+
+    public List<Article> fetchAndHandleRecommendations(String userId, int maxArticles) throws SQLException {
+        // Fetch the top N recommended articles
+        List<Article> recommendations = recommendArticles(userId, maxArticles);
+
+        if (recommendations.isEmpty()) {
+            System.out.println("No recommendations available.");
+            throw new SQLException("No recommendations available.");
+        }
+
+        // Log the top recommendations
+        System.out.println("Top recommendations:");
+        for (Article article : recommendations) {
+            System.out.println("- " + article.getTitle() + " (Similarity Score: " + article.getSimilarityScore() + ")");
+        }
+
+        return recommendations;
     }
 }

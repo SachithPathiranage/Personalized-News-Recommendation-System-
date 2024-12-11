@@ -7,6 +7,8 @@ import org.example.OOD.Models.Article;
 
 import java.sql.SQLException;
 
+import static org.example.OOD.Configurations.Alerts.showAlert;
+
 public class AddArticleController {
 
     @FXML
@@ -125,12 +127,5 @@ public class AddArticleController {
         authorField.clear();
         imageUrlField.clear();
         categoryDropdown.setValue(null);
-    }
-
-    private void showAlert(Alert.AlertType alertType ,String title, String message) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

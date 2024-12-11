@@ -19,6 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
+import static org.example.OOD.Configurations.Alerts.showAlert;
+
 public class UserLogs_Controller {
 
     @FXML
@@ -74,62 +76,57 @@ public class UserLogs_Controller {
             readArticles.forEach(data -> addArticleToList(readArticlesListView, data, "read"));
 
         } catch (SQLException e) {
-            showError("Error loading preferences", e.getMessage());
+            showAlert(Alert.AlertType.ERROR,"Error loading preferences", e.getMessage());
             e.printStackTrace();
         }
     }
 
     private void addArticleToList(ListView<HBox> listView, Map<String, Object> preferenceData, String preferenceType) {
-        try {
-            // Extract data from preferenceData
-            int articleId = (int) preferenceData.get("articleId");
-            Timestamp createdAt = (Timestamp) preferenceData.get("createdAt");
+        // Extract data from preferenceData
+        int articleId = (int) preferenceData.get("articleId");
+        Timestamp createdAt = (Timestamp) preferenceData.get("createdAt");
 
-            // Format timestamp for a more user-friendly display
-            String formattedDate = new SimpleDateFormat("MMMM dd, yyyy 'at' hh:mm a").format(createdAt);
+        // Format timestamp for a more user-friendly display
+        String formattedDate = new SimpleDateFormat("MMMM dd, yyyy 'at' hh:mm a").format(createdAt);
 
-            // Fetch all articles from the database
-            DatabaseHandler dbHandler = DatabaseHandler.getInstance();
-            List<Article> articles = dbHandler.fetchArticles();
+        // Fetch all articles from the database
+        //DatabaseHandler dbHandler = DatabaseHandler.getInstance();
+        List<Article> articles = DatabaseHandler.fetchNewsFromDatabase();
 
-            // Find the matching article by ID
-            Article matchingArticle = articles.stream()
-                    .filter(article -> article.getId() == articleId)
-                    .findFirst()
-                    .orElse(null);
+        // Find the matching article by ID
+        Article matchingArticle = articles.stream()
+                .filter(article -> article.getId() == articleId)
+                .findFirst()
+                .orElse(null);
 
-            // If article is found, create a visually appealing HBox to display it
-            if (matchingArticle != null) {
-                // Create a label for the article title and date
-                Label articleLabel = new Label(String.format(
-                        "📰 %s\n🗓️ Added on: %s",
-                        matchingArticle.getTitle(),
-                        formattedDate
-                ));
-                articleLabel.setWrapText(true); // Ensure text wraps if too long
-                articleLabel.getStyleClass().add("article-label"); // Add styling via CSS
+        // If article is found, create a visually appealing HBox to display it
+        if (matchingArticle != null) {
+            // Create a label for the article title and date
+            Label articleLabel = new Label(String.format(
+                    "📰 %s\n🗓️ Added on: %s",
+                    matchingArticle.getTitle(),
+                    formattedDate
+            ));
+            articleLabel.setWrapText(true); // Ensure text wraps if too long
+            articleLabel.getStyleClass().add("article-label"); // Add styling via CSS
 
-                // Create a "Remove" button
-                Button removeButton = new Button("Remove");
-                removeButton.getStyleClass().add("remove-button");
-                removeButton.setOnAction(event -> removePreference(matchingArticle, preferenceType, listView));
+            // Create a "Remove" button
+            Button removeButton = new Button("Remove");
+            removeButton.getStyleClass().add("remove-button");
+            removeButton.setOnAction(event -> removePreference(matchingArticle, preferenceType, listView));
 
-                // Add both the label and button to an HBox
-                HBox articleRow = new HBox(10, articleLabel, removeButton);
-                articleRow.setAlignment(Pos.CENTER_LEFT);
-                articleRow.getStyleClass().add("article-row"); // Add styling via CSS
+            // Add both the label and button to an HBox
+            HBox articleRow = new HBox(10, articleLabel, removeButton);
+            articleRow.setAlignment(Pos.CENTER_LEFT);
+            articleRow.getStyleClass().add("article-row"); // Add styling via CSS
 
-                // Add the HBox to the ListView
-                listView.getItems().add(articleRow);
+            // Add the HBox to the ListView
+            listView.getItems().add(articleRow);
 
-                // Update user preferences
-                updateUserPreferences(preferenceType, matchingArticle);
-            } else {
-                showError("Article Not Found", "No article found for ID: " + articleId);
-            }
-        } catch (SQLException e) {
-            showError("Error fetching articles", e.getMessage());
-            e.printStackTrace();
+            // Update user preferences
+            updateUserPreferences(preferenceType, matchingArticle);
+        } else {
+            showAlert(Alert.AlertType.WARNING,"Article Not Found", "No article found for ID: " + articleId);
         }
     }
 
@@ -170,15 +167,14 @@ public class UserLogs_Controller {
         }
     }
 
-    private Article getArticleByTitle(String title) throws SQLException {
+    private Article getArticleByTitle(String title)  {
         // Ensure the title is not null or empty
         if (title == null || title.isEmpty()) {
             return null;
         }
 
         // Retrieve all articles from the database
-        DatabaseHandler dbHandler = DatabaseHandler.getInstance();
-        List<Article> articles = dbHandler.fetchArticles(); // Assuming this fetches all articles
+        List<Article> articles = DatabaseHandler.fetchNewsFromDatabase(); // Assuming this fetches all articles
 
         // Search for the article by title
         for (Article article : articles) {
@@ -229,25 +225,10 @@ public class UserLogs_Controller {
                 return articleLabel.getText().contains(article.getTitle());
             });
 
-            showInfo("Preference Removed", "The article preference has been successfully removed.");
+            showAlert(Alert.AlertType.INFORMATION,"Preference Removed", "The article preference has been successfully removed.");
         } catch (SQLException e) {
-            showError("Error Removing Preference", e.getMessage());
+            showAlert(Alert.AlertType.ERROR,"Error Removing Preference", e.getMessage());
             e.printStackTrace();
         }
-    }
-
-    private void showInfo(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-
-    private void showError(String title, String message) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }
