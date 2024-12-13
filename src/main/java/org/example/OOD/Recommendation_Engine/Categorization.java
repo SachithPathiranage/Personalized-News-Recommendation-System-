@@ -46,7 +46,7 @@ public class Categorization {
         // Check if the request was successful
         if (response.statusCode() == 200) {
             // Debugging: Print the response body
-            System.out.println("Response Body: " + response.body());
+            //System.out.println("Response Body: " + response.body());
 
             // Parse the response
             JSONObject responseBody = new JSONObject(response.body());
@@ -58,7 +58,7 @@ public class Categorization {
                 JSONObject categoryObject = categoriesArray.getJSONObject(i);
 
                 // Debugging: Print each category object to inspect its structure
-                System.out.println("Category Object: " + categoryObject.toString());
+                //System.out.println("Category Object: " + categoryObject.toString());
 
                 // Accessing the category key - If the structure is different, you may need to adjust the key name
                 categories[i] = categoryObject.getString("predicted_category");  // Ensure the key matches exactly
