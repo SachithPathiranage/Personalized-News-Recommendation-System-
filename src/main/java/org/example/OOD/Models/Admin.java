@@ -25,10 +25,6 @@ public class Admin {
         return currentAdmin;
     }
 
-    public static String getAdminUsername() {
-        return currentAdmin != null ? currentAdmin.getName() : null;
-    }
-
     // Static handleLogin method
     public static Admin handleLogin(String email, String password) {
         String query = "SELECT Name FROM admin WHERE Email = ? AND Password = ?";

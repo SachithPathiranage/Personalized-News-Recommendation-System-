@@ -2,7 +2,6 @@ package org.example.OOD.Database_Handler;
 
 import com.mysql.cj.jdbc.exceptions.CommunicationsException;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import org.example.OOD.Configurations.Config;
 import org.example.OOD.Models.Admin;
@@ -12,8 +11,10 @@ import org.example.OOD.Models.User;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class DatabaseHandler {
     private static volatile DatabaseHandler instance;
@@ -471,22 +472,22 @@ public class DatabaseHandler {
     //Method to Create News Table
     public static void createNewsTableIfNotExists() {
         String createTableQuery = """
-        CREATE TABLE IF NOT EXISTS news (
-            id INT AUTO_INCREMENT PRIMARY KEY,
-            title VARCHAR(255) NOT NULL,
-            description TEXT,
-            content TEXT,
-            url VARCHAR(255) UNIQUE NOT NULL,
-            published_at DATETIME,
-            source_name VARCHAR(255),
-            author VARCHAR(255),
-            image_url VARCHAR(255),
-            category VARCHAR(255),
-            likes INT DEFAULT 0,
-            dislikes INT DEFAULT 0,
-            readers INT DEFAULT 0
-        );
-    """;
+                    CREATE TABLE IF NOT EXISTS news (
+                        id INT AUTO_INCREMENT PRIMARY KEY,
+                        title VARCHAR(255) NOT NULL,
+                        description TEXT,
+                        content TEXT,
+                        url VARCHAR(255) UNIQUE NOT NULL,
+                        published_at DATETIME,
+                        source_name VARCHAR(255),
+                        author VARCHAR(255),
+                        image_url VARCHAR(255),
+                        category VARCHAR(255),
+                        likes INT DEFAULT 0,
+                        dislikes INT DEFAULT 0,
+                        readers INT DEFAULT 0
+                    );
+                """;
 
         try (var connection = DatabaseHandler.getConnection();
              var statement = connection.createStatement()) {
@@ -592,27 +593,6 @@ public class DatabaseHandler {
         return false;
     }
 
-//    // Fetch articles from the database
-//    public List<Article> fetchArticles() throws SQLException {
-//        List<Article> articles = new ArrayList<>();
-//        String query = "SELECT id, title, description, url FROM news";
-//
-//        try (Connection connection = DatabaseHandler.getInstance().getConnection();
-//             PreparedStatement statement = connection.prepareStatement(query);
-//             ResultSet resultSet = statement.executeQuery()) {
-//
-//            while (resultSet.next()) {
-//                int id = resultSet.getInt("id");
-//                String title = resultSet.getString("title");
-//                String description = resultSet.getString("description");
-//                String url = resultSet.getString("url");
-//
-//                articles.add(new Article(id, title, description,url));
-//            }
-//        }
-//        return articles;
-//    }
-
     //Method to Fetch News From Database
     public static List<Article> fetchNewsFromDatabase() {
         List<Article> articles = new ArrayList<>();
@@ -650,26 +630,6 @@ public class DatabaseHandler {
         return articles;
     }
 
-    // Method to fetch articles by category
-    public List<Article> fetchArticlesByCategory(String category) throws SQLException {
-        List<Article> articles = new ArrayList<>();
-        String query = "SELECT * FROM news WHERE category = ?";
-        try (Connection connection = DatabaseHandler.getInstance().getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, category);
-            ResultSet resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                int id = resultSet.getInt("id");
-                String title = resultSet.getString("title");
-                String description = resultSet.getString("description");
-                String sourceName = resultSet.getString("source_name");
-                String publishedDate = resultSet.getString("published_at");
-                String imageUrl = resultSet.getString("image_url");
-                articles.add(new Article(id, title, description, sourceName, publishedDate, imageUrl, category));
-            }
-        }
-        return articles;
-    }
 
     // Method to fetch an article by ID
     public Article fetchArticleById(int articleId) throws SQLException {

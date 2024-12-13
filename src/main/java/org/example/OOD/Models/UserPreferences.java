@@ -135,11 +135,6 @@ public class UserPreferences {
         return dislikedArticles.contains(article);
     }
 
-    // Check if an article is already in preferences
-    public boolean hasArticle(Article article) {
-        return likedArticles.contains(article) || dislikedArticles.contains(article);
-    }
-
     public void addReadArticle(Article article, String userId) {
         try {
             if (!readArticles.contains(article)) {

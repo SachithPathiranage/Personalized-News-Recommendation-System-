@@ -18,9 +18,8 @@ public class User {
     private UserPreferences preferences;
     public static User currentUser; // Static field to store the logged-in user
 
-    public User(String id, String unique_code, String name, String email, String password) {
+    public User(String id, String name, String email, String password) {
         this.id = id;
-        this.unique_code = unique_code;
         this.name = name;
         this.email = email;
         this.password = password;
@@ -35,12 +34,6 @@ public class User {
 
     public User() {}
 
-    public User(int id, String name, String email) {
-        this.id = String.valueOf(id);
-        this.name = name;
-        this.email = email;
-        this.preferences = new UserPreferences();
-    }
 
     // Getters and setters for each field
     public String getUnique_code() {
@@ -109,7 +102,7 @@ public class User {
                 String userId = DatabaseHandler.generateUserId();
 
                 // Create new user object
-                User newUser = new User(userId, uniqueCode, name, email, password);
+                User newUser = new User(userId, name, email, password);
 
                 // Save user to database
                 DatabaseHandler.saveUserToDatabase(newUser);

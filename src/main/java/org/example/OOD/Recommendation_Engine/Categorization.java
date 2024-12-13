@@ -16,7 +16,7 @@ import static org.example.OOD.Configurations.Alerts.showAlert;
 
 public class Categorization {
 
-    public String[] categorizeArticles(List<String> articles) throws Exception {
+    public String[] FlaskAPIConnection(List<String> articles) throws Exception {
         // Create a JSON array to hold the article objects
         JSONArray articlesArray = new JSONArray();
 
@@ -89,7 +89,7 @@ public class Categorization {
         //System.out.println("Titles and descriptions to categorize: " + titlesAndDescriptions);
 
         // Step 3: Categorize articles using both title and description
-        String[] categories = categorizeArticles(titlesAndDescriptions);
+        String[] categories = FlaskAPIConnection(titlesAndDescriptions);
 
         // Step 4: Update the database with categories
         for (int i = 0; i < articles.size(); i++) {
